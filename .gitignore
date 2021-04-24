@@ -1,0 +1,4 @@
+.ansible-venv/
+.terraform/
+terraform.tfstate*
+tfplan

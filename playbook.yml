@@ -1,0 +1,121 @@
+# see https://docs.ansible.com/ansible/2.9/user_guide/windows_usage.html
+# see https://docs.ansible.com/ansible/2.9/modules/list_of_windows_modules.html
+# see https://docs.ansible.com/ansible/2.9/user_guide/windows_faq.html#can-i-run-python-modules-on-windows-hosts
+# see https://github.com/ansible-collections/community.windows
+
+- hosts: all
+  name: Example
+  gather_facts: no
+  tasks:
+    # NB cloud-init data volume normally is assigned the D drive letter, which
+    #    we want to use in our data disk.
+    # see https://github.com/ansible-collections/community.windows/issues/135
+    - name: Remove the cloud-init data disk drive letter
+      win_shell: |
+        Set-StrictMode -Version Latest
+        $ErrorActionPreference = 'Stop'
+        $ProgressPreference = 'SilentlyContinue'
+        $volume = Get-Volume -FileSystemLabel cidata -ErrorAction SilentlyContinue
+        if ($volume -and $volume.DriveLetter) {
+          $stdout = mountvol.exe "$($volume.DriveLetter):" /d
+          if ($LASTEXITCODE) {
+            throw "Failed to remove the cloud-init data disk drive letter $($volume.DriveLetter): #$LASTEXITCODE $stdout"
+          }
+          Write-Output 'drive letter removed'
+        }
+      register: win_shell
+      changed_when: "'drive letter removed' in win_shell.stdout_lines"
+
+    - name: Initialize the data disk in the D drive
+      block:
+        - name: Initialize the data disk
+          community.windows.win_initialize_disk:
+            disk_number: 1
+            style: mbr
+        - name: Partition the data disk
+          community.windows.win_partition:
+            drive_letter: D
+            disk_number: 1
+            partition_size: -1
+        - name: Create the data filesystem
+          community.windows.win_format:
+            drive_letter: D
+            file_system: ntfs
+            new_label: data
+
+    - name: Install Notepad3
+      chocolatey.chocolatey.win_chocolatey:
+        # https://community.chocolatey.org/packages/notepad3
+        name: notepad3
+        version: '5.21.227.1'
+
+    - name: Install Firefox
+      block:
+        - name: Install Firefox
+          chocolatey.chocolatey.win_chocolatey:
+            # https://community.chocolatey.org/packages/firefox
+            name: firefox
+            version: '88.0'
+            package_params: /l:en-US
+        - name: Install SetDefaultBrowser
+          chocolatey.chocolatey.win_chocolatey:
+            # https://community.chocolatey.org/packages/setdefaultbrowser
+            name: setdefaultbrowser
+            version: '1.5.0'
+        - name: Set Firefox as the default browser
+          win_shell: |
+            Set-StrictMode -Version Latest
+            $ErrorActionPreference = 'Stop'
+            $ProgressPreference = 'SilentlyContinue'
+            $browser = @((SetDefaultBrowser | Where-Object {$_ -like 'HKLM Firefox-*'}) -split ' ')
+            $browserId = $browser[1]
+            $path = "$env:TEMP\AppAssociations.xml"
+            Dism /Online "/Export-DefaultAppAssociations:$path"
+            [xml]$doc = Get-Content $path
+            Remove-Item $path
+            $node = $doc.SelectSingleNode("/DefaultAssociations/Association[@ApplicationName='Firefox']")
+            if (!$node) {
+              SetDefaultBrowser @browser
+              Write-Output 'browser changed'
+            }
+          register: win_shell
+          changed_when: "'browser changed' in win_shell.stdout_lines"
+
+    - name: Install Git
+      chocolatey.chocolatey.win_chocolatey:
+        # https://community.chocolatey.org/packages/git
+        name: git
+        version: '2.31.1'
+        package_params: /GitOnlyOnPath /NoAutoCrlf /SChannel
+
+    - name: Install Git Extensions
+      block:
+        - name: Install Git Extensions
+          chocolatey.chocolatey.win_chocolatey:
+            # https://community.chocolatey.org/packages/gitextensions
+            name: gitextensions
+            version: '3.4.3'
+        - name: Configure Git Extensions
+          win_shell: |
+            Set-StrictMode -Version Latest
+            $ErrorActionPreference = 'Stop'
+            $ProgressPreference = 'SilentlyContinue'
+            function Set-GitExtensionsStringSetting($name, $value) {
+              $settingsPath = "$env:APPDATA\GitExtensions\GitExtensions\GitExtensions.settings"
+              [xml]$settingsDocument = Get-Content $settingsPath
+              $node = $settingsDocument.SelectSingleNode("/dictionary/item[key/string[text()='$name']]")
+              if (!$node) {
+                $node = $settingsDocument.CreateElement('item')
+                $node.InnerXml = "<key><string>$name</string></key><value><string/></value>"
+                $settingsDocument.dictionary.AppendChild($node) | Out-Null
+              }
+              if ($value -cne $node.value.string) {
+                $node.value.string = $value
+                $settingsDocument.Save($settingsPath)
+                Write-Output 'setting modified'
+              }
+            }
+            Set-GitExtensionsStringSetting TelemetryEnabled false
+            Set-GitExtensionsStringSetting translation English
+          register: win_shell
+          changed_when: "'setting modified' in win_shell.stdout_lines"
