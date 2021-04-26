@@ -11,20 +11,20 @@
     #    we want to use in our data disk.
     # see https://github.com/ansible-collections/community.windows/issues/135
     - name: Remove the cloud-init data disk drive letter
-      win_shell: |
-        Set-StrictMode -Version Latest
-        $ErrorActionPreference = 'Stop'
-        $ProgressPreference = 'SilentlyContinue'
-        $volume = Get-Volume -FileSystemLabel cidata -ErrorAction SilentlyContinue
-        if ($volume -and $volume.DriveLetter) {
-          $stdout = mountvol.exe "$($volume.DriveLetter):" /d
-          if ($LASTEXITCODE) {
-            throw "Failed to remove the cloud-init data disk drive letter $($volume.DriveLetter): #$LASTEXITCODE $stdout"
+      ansible.windows.win_powershell:
+        script: |
+          Set-StrictMode -Version Latest
+          $ErrorActionPreference = 'Stop'
+          $ProgressPreference = 'SilentlyContinue'
+          $Ansible.Changed = $false
+          $volume = Get-Volume -FileSystemLabel cidata -ErrorAction SilentlyContinue
+          if ($volume -and $volume.DriveLetter) {
+            $stdout = mountvol.exe "$($volume.DriveLetter):" /d
+            if ($LASTEXITCODE) {
+              throw "Failed to remove the cloud-init data disk drive letter $($volume.DriveLetter): #$LASTEXITCODE $stdout"
+            }
+            $Ansible.Changed = $true
           }
-          Write-Output 'drive letter removed'
-        }
-      register: win_shell
-      changed_when: "'drive letter removed' in win_shell.stdout_lines"
 
     - name: Initialize the data disk in the D drive
       block:
@@ -69,23 +69,23 @@
             name: setdefaultbrowser
             version: '1.5.0'
         - name: Set Firefox as the default browser
-          win_shell: |
-            Set-StrictMode -Version Latest
-            $ErrorActionPreference = 'Stop'
-            $ProgressPreference = 'SilentlyContinue'
-            $browser = @((SetDefaultBrowser | Where-Object {$_ -like 'HKLM Firefox-*'}) -split ' ')
-            $browserId = $browser[1]
-            $path = "$env:TEMP\AppAssociations.xml"
-            Dism /Online "/Export-DefaultAppAssociations:$path"
-            [xml]$doc = Get-Content $path
-            Remove-Item $path
-            $node = $doc.SelectSingleNode("/DefaultAssociations/Association[@ApplicationName='Firefox']")
-            if (!$node) {
-              SetDefaultBrowser @browser
-              Write-Output 'browser changed'
-            }
-          register: win_shell
-          changed_when: "'browser changed' in win_shell.stdout_lines"
+          ansible.windows.win_powershell:
+            script: |
+              Set-StrictMode -Version Latest
+              $ErrorActionPreference = 'Stop'
+              $ProgressPreference = 'SilentlyContinue'
+              $Ansible.Changed = $false
+              $browser = @((SetDefaultBrowser | Where-Object {$_ -like 'HKLM Firefox-*'}) -split ' ')
+              $browserId = $browser[1]
+              $path = "$env:TEMP\AppAssociations.xml"
+              Dism /Online "/Export-DefaultAppAssociations:$path"
+              [xml]$doc = Get-Content $path
+              Remove-Item $path
+              $node = $doc.SelectSingleNode("/DefaultAssociations/Association[@ApplicationName='Firefox']")
+              if (!$node) {
+                SetDefaultBrowser @browser
+                $Ansible.Changed = $true
+              }
 
     - name: Install Git
       chocolatey.chocolatey.win_chocolatey:
@@ -102,26 +102,26 @@
             name: gitextensions
             version: '3.4.3'
         - name: Configure Git Extensions
-          win_shell: |
-            Set-StrictMode -Version Latest
-            $ErrorActionPreference = 'Stop'
-            $ProgressPreference = 'SilentlyContinue'
-            function Set-GitExtensionsStringSetting($name, $value) {
-              $settingsPath = "$env:APPDATA\GitExtensions\GitExtensions\GitExtensions.settings"
-              [xml]$settingsDocument = Get-Content $settingsPath
-              $node = $settingsDocument.SelectSingleNode("/dictionary/item[key/string[text()='$name']]")
-              if (!$node) {
-                $node = $settingsDocument.CreateElement('item')
-                $node.InnerXml = "<key><string>$name</string></key><value><string/></value>"
-                $settingsDocument.dictionary.AppendChild($node) | Out-Null
+          ansible.windows.win_powershell:
+            script: |
+              Set-StrictMode -Version Latest
+              $ErrorActionPreference = 'Stop'
+              $ProgressPreference = 'SilentlyContinue'
+              $Ansible.Changed = $false
+              function Set-GitExtensionsStringSetting($name, $value) {
+                $settingsPath = "$env:APPDATA\GitExtensions\GitExtensions\GitExtensions.settings"
+                [xml]$settingsDocument = Get-Content $settingsPath
+                $node = $settingsDocument.SelectSingleNode("/dictionary/item[key/string[text()='$name']]")
+                if (!$node) {
+                  $node = $settingsDocument.CreateElement('item')
+                  $node.InnerXml = "<key><string>$name</string></key><value><string/></value>"
+                  $settingsDocument.dictionary.AppendChild($node) | Out-Null
+                }
+                if ($value -cne $node.value.string) {
+                  $node.value.string = $value
+                  $settingsDocument.Save($settingsPath)
+                  $Ansible.Changed = $true
+                }
               }
-              if ($value -cne $node.value.string) {
-                $node.value.string = $value
-                $settingsDocument.Save($settingsPath)
-                Write-Output 'setting modified'
-              }
-            }
-            Set-GitExtensionsStringSetting TelemetryEnabled false
-            Set-GitExtensionsStringSetting translation English
-          register: win_shell
-          changed_when: "'setting modified' in win_shell.stdout_lines"
+              Set-GitExtensionsStringSetting TelemetryEnabled false
+              Set-GitExtensionsStringSetting translation English
