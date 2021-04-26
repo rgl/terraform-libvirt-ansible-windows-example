@@ -57,13 +57,14 @@ resource "ansible_host" "example" {
 resource "ansible_group" "example" {
   inventory_group_name = "example"
   vars = {
+    # connection configuration.
+    # see https://docs.ansible.com/ansible/2.9/plugins/connection/psrp.html
     ansible_user = var.winrm_username
     ansible_password = var.winrm_password
-    ansible_connection = "winrm"
-    ansible_port = "5985"
-    # TODO use https and/or verify whether credssp enables encryption.
-    ansible_winrm_scheme = "http"
-    ansible_winrm_transport = "credssp"
+    ansible_connection = "psrp"
+    ansible_psrp_protocol = "http"
+    ansible_psrp_message_encryption = "never"
+    ansible_psrp_auth = "credssp"
   }
 }
 

@@ -36,6 +36,7 @@ Install Ansible:
 ```bash
 ansible_version='2.9.20'        # see https://pypi.org/project/ansible/
 ansible_lint_version='4.3.7'    # see https://pypi.org/project/ansible-lint/
+pypsrp_version='0.5.0'          # see https://pypi.org/project/pypsrp/
 # see https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-ansible-with-pip
 sudo apt-get install -y --no-install-recommends python3-pip python3-venv
 rm -rf .ansible-venv
@@ -43,7 +44,9 @@ python3 -m venv .ansible-venv
 source .ansible-venv/bin/activate
 # NB this pip install will display several "error: invalid command 'bdist_wheel'"
 #    messages, those can be ignored.
-python3 -m pip install ansible==$ansible_version ansible-lint==$ansible_lint_version pywinrm pywinrm[credssp]
+python3 -m pip install "ansible==$ansible_version" "ansible-lint==$ansible_lint_version"
+python3 -m pip install "pypsrp==$pypsrp_version"
+python3 -m pip install "pypsrp[credssp]==$pypsrp_version" # NB this must be executed in a different command than pypsrp.
 ansible --version
 ansible -m ping localhost
 ```
