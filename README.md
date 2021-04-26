@@ -117,20 +117,18 @@ Destroy the infrastructure:
 time terraform destroy -auto-approve
 ```
 
-## WinRM
+## Windows Management
 
-Ansible should use the `winrm` `ansible_connection` type to manage Windows
-based hosts as its the native Windows management protocol.
+Ansible can use one of the native Windows management protocols: [psrp](https://docs.ansible.com/ansible/2.9/plugins/connection/psrp.html) (recommended) or [winrm](https://docs.ansible.com/ansible/2.9/plugins/connection/winrm.html).
 
-Its also advisable to use the `credssp` `ansible_winrm_transport` as its
-the most flexible transport:
+Its also advisable to use the `credssp` transport, as its the most flexible transport:
 
-| ansible_winrm_transport | local accounts | active directory accounts | credentials delegation | encryption |
-|-------------------------|----------------|---------------------------|------------------------|------------|
-| basic                   | yes            | no                        | no                     | no         |
-| certificate             | yes            | no                        | no                     | no         |
-| kerberos                | no             | yes                       | yes                    | yes        |
-| ntlm                    | yes            | yes                       | no                     | yes        |
-| credssp                 | yes            | yes                       | yes                    | yes        |
+| transport   | local accounts | active directory accounts | credentials delegation | encryption |
+|-------------|----------------|---------------------------|------------------------|------------|
+| basic       | yes            | no                        | no                     | no         |
+| certificate | yes            | no                        | no                     | no         |
+| kerberos    | no             | yes                       | yes                    | yes        |
+| ntlm        | yes            | yes                       | no                     | yes        |
+| credssp     | yes            | yes                       | yes                    | yes        |
 
-See https://docs.ansible.com/ansible/2.9/user_guide/windows_winrm.html#credssp
+For more information see the [Ansible CredSSP documentation](https://docs.ansible.com/ansible/2.9/user_guide/windows_winrm.html#credssp).
