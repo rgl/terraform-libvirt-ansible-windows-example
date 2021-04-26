@@ -77,10 +77,9 @@
               $Ansible.Changed = $false
               $browser = @((SetDefaultBrowser | Where-Object {$_ -like 'HKLM Firefox-*'}) -split ' ')
               $browserId = $browser[1]
-              $path = "$env:TEMP\AppAssociations.xml"
+              $path = "$($Ansible.Tmpdir)\AppAssociations.xml"
               Dism /Online "/Export-DefaultAppAssociations:$path"
               [xml]$doc = Get-Content $path
-              Remove-Item $path
               $node = $doc.SelectSingleNode("/DefaultAssociations/Association[@ApplicationName='Firefox']")
               if (!$node) {
                 SetDefaultBrowser @browser
