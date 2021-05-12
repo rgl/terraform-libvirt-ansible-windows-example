@@ -34,21 +34,21 @@ cd ..
 Install Ansible:
 
 ```bash
-ansible_version='2.9.20'        # see https://pypi.org/project/ansible/
-ansible_lint_version='4.3.7'    # see https://pypi.org/project/ansible-lint/
-pypsrp_version='0.5.0'          # see https://pypi.org/project/pypsrp/
-# see https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-ansible-with-pip
-sudo apt-get install -y --no-install-recommends python3-pip python3-venv
+# install ansible dependencies from system packages.
+# see https://docs.ansible.com/ansible-core/latest/installation_guide/intro_installation.html#installing-ansible-with-pip
+sudo apt-get install -y --no-install-recommends \
+    python3-pip \
+    python3-venv \
+    python3-cryptography \
+    python3-yaml
+# (re)create the venv.
 rm -rf .ansible-venv
-python3 -m venv .ansible-venv
+python3 -m venv --system-site-packages .ansible-venv
 source .ansible-venv/bin/activate
+# install ansible and dependencies.
 # NB this pip install will display several "error: invalid command 'bdist_wheel'"
 #    messages, those can be ignored.
-python3 -m pip install "ansible==$ansible_version" "ansible-lint==$ansible_lint_version"
-python3 -m pip install "pypsrp==$pypsrp_version"
-python3 -m pip install "pypsrp[credssp]==$pypsrp_version" # NB this must be executed in a different command than pypsrp.
-ansible --version
-ansible -m ping localhost
+python3 -m pip install -r requirements.txt
 ```
 
 Install the ansible terraform dynamic inventory provider:
@@ -104,10 +104,9 @@ ansible -vvv -m win_command -a 'whoami /all' all
 ansible -vvv -m win_shell -a '$FormatEnumerationLimit = -1; dir env: | Sort-Object Name | Format-Table -AutoSize | Out-String -Stream -Width ([int]::MaxValue) | ForEach-Object {$_.TrimEnd()}' all
 
 # execute the playbook.
-# see https://docs.ansible.com/ansible/2.9/user_guide/windows_winrm.html#limitations
-# see https://docs.ansible.com/ansible/2.9/user_guide/windows_usage.html
-# see https://docs.ansible.com/ansible/2.9/modules/list_of_windows_modules.html
-# see https://docs.ansible.com/ansible/2.9/user_guide/windows_faq.html#can-i-run-python-modules-on-windows-hosts
+# see https://docs.ansible.com/ansible-core/2.11/user_guide/windows_winrm.html#limitations
+# see https://docs.ansible.com/ansible-core/2.11/user_guide/windows_usage.html
+# see https://docs.ansible.com/ansible-core/2.11/user_guide/windows_faq.html#can-i-run-python-modules-on-windows-hosts
 time ansible-playbook playbook.yml #-vvv
 ```
 
@@ -119,7 +118,7 @@ time terraform destroy -auto-approve
 
 ## Windows Management
 
-Ansible can use one of the native Windows management protocols: [psrp](https://docs.ansible.com/ansible/2.9/plugins/connection/psrp.html) (recommended) or [winrm](https://docs.ansible.com/ansible/2.9/plugins/connection/winrm.html).
+Ansible can use one of the native Windows management protocols: [psrp](https://docs.ansible.com/ansible-core/2.11/collections/ansible/builtin/psrp_connection.html) (recommended) or [winrm](https://docs.ansible.com/ansible-core/2.11/collections/ansible/builtin/winrm_connection.html).
 
 Its also advisable to use the `credssp` transport, as its the most flexible transport:
 
@@ -131,4 +130,4 @@ Its also advisable to use the `credssp` transport, as its the most flexible tran
 | ntlm        | yes            | yes                       | no                     | yes        |
 | credssp     | yes            | yes                       | yes                    | yes        |
 
-For more information see the [Ansible CredSSP documentation](https://docs.ansible.com/ansible/2.9/user_guide/windows_winrm.html#credssp).
+For more information see the [Ansible CredSSP documentation](https://docs.ansible.com/ansible-core/2.11/user_guide/windows_winrm.html#credssp).

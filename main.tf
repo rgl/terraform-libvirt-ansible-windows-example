@@ -58,7 +58,7 @@ resource "ansible_group" "example" {
   inventory_group_name = "example"
   vars = {
     # connection configuration.
-    # see https://docs.ansible.com/ansible/2.9/plugins/connection/psrp.html
+    # see https://docs.ansible.com/ansible-core/2.11/collections/ansible/builtin/psrp_connection.html
     ansible_user = var.winrm_username
     ansible_password = var.winrm_password
     ansible_connection = "psrp"

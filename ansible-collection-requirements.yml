@@ -2,6 +2,9 @@ collections:
   # see https://galaxy.ansible.com/community/windows
   - name: community.windows
     version: 1.3.0
+  # see https://galaxy.ansible.com/community/general
+  - name: community.general
+    version: 3.0.2
   # see https://galaxy.ansible.com/ansible/windows
   - name: ansible.windows
     version: 1.5.0
