@@ -130,3 +130,4 @@
               }
               Set-GitExtensionsStringSetting TelemetryEnabled false
               Set-GitExtensionsStringSetting translation English
+              Set-GitExtensionsStringSetting gitbindir 'C:\Program Files\Git\bin\'
