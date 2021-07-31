@@ -5,8 +5,8 @@ Create and install the [base Windows 2019 vagrant box](https://github.com/rgl/wi
 Install Terraform:
 
 ```bash
-wget https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip
-unzip terraform_1.0.0_linux_amd64.zip
+wget https://releases.hashicorp.com/terraform/1.0.3/terraform_1.0.3_linux_amd64.zip
+unzip terraform_1.0.3_linux_amd64.zip
 sudo install terraform /usr/local/bin
 rm terraform terraform_*_linux_amd64.zip
 ```
