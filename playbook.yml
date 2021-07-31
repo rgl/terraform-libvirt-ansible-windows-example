@@ -63,7 +63,7 @@
           chocolatey.chocolatey.win_chocolatey:
             # https://community.chocolatey.org/packages/firefox
             name: firefox
-            version: '89.0'
+            version: '90.0.2'
             state: latest
             package_params: /l:en-US
         - name: Install SetDefaultBrowser
@@ -94,7 +94,7 @@
       chocolatey.chocolatey.win_chocolatey:
         # https://community.chocolatey.org/packages/git
         name: git
-        version: '2.32.0'
+        version: '2.32.0.2'
         state: latest
         package_params: /GitOnlyOnPath /NoAutoCrlf /SChannel
 
@@ -104,7 +104,7 @@
           chocolatey.chocolatey.win_chocolatey:
             # https://community.chocolatey.org/packages/gitextensions
             name: gitextensions
-            version: '3.5'
+            version: '3.5.1'
             state: latest
         - name: Configure Git Extensions
           ansible.windows.win_powershell:
