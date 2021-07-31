@@ -1,5 +1,7 @@
 # Usage (Ubuntu 20.04 host)
 
+Create and install the [base Windows 2019 vagrant box](https://github.com/rgl/windows-vagrant).
+
 Install Terraform:
 
 ```bash
