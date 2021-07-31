@@ -46,7 +46,7 @@ command = json.dumps({
 })
 while True:
     result = json.loads(libvirt_qemu.qemuAgentCommand(domain, command, -2, 0))
-    if result['return']['exited']:
+    if result['return']['exited'] and 'out-data' in result['return']:
         print(base64.b64decode(result['return']['out-data']).decode('utf-8'))
         break
     time.sleep(0.1)
