@@ -42,6 +42,7 @@ sudo apt-get install -y --no-install-recommends \
     python3-pip \
     python3-venv \
     python3-cryptography \
+    python3-openssl \
     python3-yaml
 # (re)create the venv.
 rm -rf .ansible-venv
