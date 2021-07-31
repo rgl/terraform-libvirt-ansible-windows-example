@@ -29,24 +29,33 @@ except libvirt.libvirtError:
 
 # execute a command inside the guest.
 # see https://libvirt.org/html/libvirt-libvirt-qemu.html#virDomainQemuAgentCommand
-command = json.dumps({
-    'execute': 'guest-exec',
-    'arguments': {
-        'path': command_path,
-        'arg': command_args,
-        'capture-output': True,
-    }
-})
-result = json.loads(libvirt_qemu.qemuAgentCommand(domain, command, -2, 0))
-command = json.dumps({
-    'execute': 'guest-exec-status',
-    'arguments': {
-        'pid': result['return']['pid'],
-    }
-})
 while True:
+    command = json.dumps({
+        'execute': 'guest-exec',
+        'arguments': {
+            'path': command_path,
+            'arg': command_args,
+            'capture-output': True,
+        }
+    })
     result = json.loads(libvirt_qemu.qemuAgentCommand(domain, command, -2, 0))
-    if result['return']['exited'] and 'out-data' in result['return']:
-        print(base64.b64decode(result['return']['out-data']).decode('utf-8'))
+    command = json.dumps({
+        'execute': 'guest-exec-status',
+        'arguments': {
+            'pid': result['return']['pid'],
+        }
+    })
+    try:
+        while True:
+            result = json.loads(libvirt_qemu.qemuAgentCommand(domain, command, -2, 0))
+            if result['return']['exited'] and 'out-data' in result['return']:
+                print(base64.b64decode(result['return']['out-data']).decode('utf-8'))
+                break
+            time.sleep(0.1)
         break
-    time.sleep(0.1)
+    except libvirt.libvirtError as e:
+        # let it retry when the error is:
+        #   libvirt.libvirtError: internal error: unable to execute QEMU agent command 'guest-exec-status': Invalid parameter 'pid'
+        if "Invalid parameter 'pid'" not in str(e):
+            raise
+    time.sleep(3)
