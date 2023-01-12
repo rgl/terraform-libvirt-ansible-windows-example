@@ -1,12 +1,12 @@
-# Usage (Ubuntu 20.04 host)
+# Usage (Ubuntu 22.04 host)
 
-Create and install the [base Windows 2019 vagrant box](https://github.com/rgl/windows-vagrant).
+Create and install the [base Windows 2022 vagrant box](https://github.com/rgl/windows-vagrant).
 
 Install Terraform:
 
 ```bash
-wget https://releases.hashicorp.com/terraform/1.0.3/terraform_1.0.3_linux_amd64.zip
-unzip terraform_1.0.3_linux_amd64.zip
+wget https://releases.hashicorp.com/terraform/1.3.7/terraform_1.3.7_linux_amd64.zip
+unzip terraform_1.3.7_linux_amd64.zip
 sudo install terraform /usr/local/bin
 rm terraform terraform_*_linux_amd64.zip
 ```
@@ -62,6 +62,7 @@ Show information about the libvirt/qemu guest:
 virsh dumpxml terraform_example
 virsh qemu-agent-command terraform_example '{"execute":"guest-info"}' --pretty
 virsh qemu-agent-command terraform_example '{"execute":"guest-network-get-interfaces"}' --pretty
+# NB it will take some minutes until qemu-agent and winrm are available. so retry until it works.
 ./qemu-agent-guest-exec terraform_example winrm enumerate winrm/config/listener
 ./qemu-agent-guest-exec terraform_example winrm get winrm/config
 ```
@@ -85,9 +86,9 @@ ansible -vvv -m win_command -a 'whoami /all' all
 ansible -vvv -m win_shell -a '$FormatEnumerationLimit = -1; dir env: | Sort-Object Name | Format-Table -AutoSize | Out-String -Stream -Width ([int]::MaxValue) | ForEach-Object {$_.TrimEnd()}' all
 
 # execute the playbook.
-# see https://docs.ansible.com/ansible-core/2.11/user_guide/windows_winrm.html#limitations
-# see https://docs.ansible.com/ansible-core/2.11/user_guide/windows_usage.html
-# see https://docs.ansible.com/ansible-core/2.11/user_guide/windows_faq.html#can-i-run-python-modules-on-windows-hosts
+# see https://docs.ansible.com/ansible-core/2.14/os_guide/windows_winrm.html#winrm-limitations
+# see https://docs.ansible.com/ansible-core/2.14/os_guide/windows_usage.html
+# see https://docs.ansible.com/ansible-core/2.14/os_guide/windows_faq.html#can-i-run-python-modules-on-windows-hosts
 time ansible-playbook playbook.yml #-vvv
 ```
 
@@ -99,7 +100,7 @@ time terraform destroy -auto-approve
 
 ## Windows Management
 
-Ansible can use one of the native Windows management protocols: [psrp](https://docs.ansible.com/ansible-core/2.11/collections/ansible/builtin/psrp_connection.html) (recommended) or [winrm](https://docs.ansible.com/ansible-core/2.11/collections/ansible/builtin/winrm_connection.html).
+Ansible can use one of the native Windows management protocols: [psrp](https://docs.ansible.com/ansible-core/2.14/collections/ansible/builtin/psrp_connection.html) (recommended) or [winrm](https://docs.ansible.com/ansible-core/2.14/collections/ansible/builtin/winrm_connection.html).
 
 Its also advisable to use the `credssp` transport, as its the most flexible transport:
 
@@ -111,4 +112,4 @@ Its also advisable to use the `credssp` transport, as its the most flexible tran
 | ntlm        | yes            | yes                       | no                     | yes        |
 | credssp     | yes            | yes                       | yes                    | yes        |
 
-For more information see the [Ansible CredSSP documentation](https://docs.ansible.com/ansible-core/2.11/user_guide/windows_winrm.html#credssp).
+For more information see the [Ansible CredSSP documentation](https://docs.ansible.com/ansible-core/2.14/os_guide/windows_winrm.html#credssp).

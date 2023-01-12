@@ -1,11 +1,11 @@
-# see https://docs.ansible.com/ansible-core/2.11/user_guide/windows_usage.html
-# see https://docs.ansible.com/ansible-core/2.11/user_guide/windows_faq.html#can-i-run-python-modules-on-windows-hosts
+# see https://docs.ansible.com/ansible-core/2.14/os_guide/windows_usage.html
+# see https://docs.ansible.com/ansible-core/2.14/os_guide/windows_faq.html#can-i-run-python-modules-on-windows-hosts
 # see https://github.com/ansible-collections/ansible.windows
 # see https://github.com/ansible-collections/community.windows
 
 - hosts: all
   name: Example
-  gather_facts: no
+  gather_facts: false
   tasks:
     # NB cloud-init data volume normally is assigned the D drive letter, which
     #    we want to use in our data disk.
@@ -47,14 +47,14 @@
       chocolatey.chocolatey.win_chocolatey:
         # https://community.chocolatey.org/packages/chocolatey
         name: chocolatey
-        version: '0.10.15'
+        version: '1.2.1'
         state: latest
 
     - name: Install Notepad3
       chocolatey.chocolatey.win_chocolatey:
         # https://community.chocolatey.org/packages/notepad3
         name: notepad3
-        version: '5.21.227.1'
+        version: '5.21.1129.1'
         state: latest
 
     - name: Install Firefox
@@ -63,7 +63,7 @@
           chocolatey.chocolatey.win_chocolatey:
             # https://community.chocolatey.org/packages/firefox
             name: firefox
-            version: '90.0.2'
+            version: '108.0.2'
             state: latest
             package_params: /l:en-US
         - name: Install SetDefaultBrowser
@@ -94,17 +94,24 @@
       chocolatey.chocolatey.win_chocolatey:
         # https://community.chocolatey.org/packages/git
         name: git
-        version: '2.32.0.2'
+        version: '2.39.0'
         state: latest
         package_params: /GitOnlyOnPath /NoAutoCrlf /SChannel
 
     - name: Install Git Extensions
       block:
+        - name: Install Git Extensions Dependencies
+          chocolatey.chocolatey.win_chocolatey:
+            # https://community.chocolatey.org/packages/dotnet-6.0-desktopruntime
+            # see https://github.com/chocolatey-community/chocolatey-packages/issues/2111
+            name: dotnet-6.0-desktopruntime
+            version: '6.0.13'
+            state: latest
         - name: Install Git Extensions
           chocolatey.chocolatey.win_chocolatey:
             # https://community.chocolatey.org/packages/gitextensions
             name: gitextensions
-            version: '3.5.1'
+            version: '4.0.1'
             state: latest
         - name: Configure Git Extensions
           ansible.windows.win_powershell:
