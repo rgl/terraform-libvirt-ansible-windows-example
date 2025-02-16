@@ -1,10 +1,10 @@
-# see https://docs.ansible.com/ansible-core/2.14/os_guide/windows_usage.html
-# see https://docs.ansible.com/ansible-core/2.14/os_guide/windows_faq.html#can-i-run-python-modules-on-windows-hosts
+# see https://docs.ansible.com/ansible-core/2.18/os_guide/windows_usage.html
+# see https://docs.ansible.com/ansible-core/2.18/os_guide/windows_faq.html#can-i-run-python-modules-on-windows-hosts
 # see https://github.com/ansible-collections/ansible.windows
 # see https://github.com/ansible-collections/community.windows
 
-- hosts: all
-  name: Example
+- name: Example
+  hosts: all
   gather_facts: false
   tasks:
     # NB cloud-init data volume normally is assigned the D drive letter, which
@@ -45,33 +45,37 @@
 
     - name: Install Chocolatey
       chocolatey.chocolatey.win_chocolatey:
-        # https://community.chocolatey.org/packages/chocolatey
         name: chocolatey
-        version: '1.2.1'
-        state: latest
+        # see https://community.chocolatey.org/packages/chocolatey
+        # renovate: datasource=nuget:chocolatey depName=chocolatey
+        version: '2.4.2'
+        state: downgrade
 
     - name: Install Notepad3
       chocolatey.chocolatey.win_chocolatey:
-        # https://community.chocolatey.org/packages/notepad3
         name: notepad3
-        version: '5.21.1129.1'
-        state: latest
+        # https://community.chocolatey.org/packages/notepad3
+        # renovate: datasource=nuget:chocolatey depName=notepad3
+        version: '6.23.203.2'
+        state: downgrade
 
     - name: Install Firefox
       block:
         - name: Install Firefox
           chocolatey.chocolatey.win_chocolatey:
-            # https://community.chocolatey.org/packages/firefox
             name: firefox
-            version: '108.0.2'
-            state: latest
+            # https://community.chocolatey.org/packages/firefox
+            # renovate: datasource=nuget:chocolatey depName=firefox
+            version: '135.0.0'
+            state: downgrade
             package_params: /l:en-US
         - name: Install SetDefaultBrowser
           chocolatey.chocolatey.win_chocolatey:
-            # https://community.chocolatey.org/packages/setdefaultbrowser
             name: setdefaultbrowser
+            # https://community.chocolatey.org/packages/setdefaultbrowser
+            # renovate: datasource=nuget:chocolatey depName=setdefaultbrowser
             version: '1.5.0'
-            state: latest
+            state: downgrade
         - name: Set Firefox as the default browser
           ansible.windows.win_powershell:
             script: |
@@ -92,27 +96,22 @@
 
     - name: Install Git
       chocolatey.chocolatey.win_chocolatey:
-        # https://community.chocolatey.org/packages/git
         name: git
-        version: '2.39.0'
-        state: latest
+        # https://community.chocolatey.org/packages/git
+        # renovate: datasource=nuget:chocolatey depName=git
+        version: '2.48.1'
+        state: downgrade
         package_params: /GitOnlyOnPath /NoAutoCrlf /SChannel
 
     - name: Install Git Extensions
       block:
-        - name: Install Git Extensions Dependencies
-          chocolatey.chocolatey.win_chocolatey:
-            # https://community.chocolatey.org/packages/dotnet-6.0-desktopruntime
-            # see https://github.com/chocolatey-community/chocolatey-packages/issues/2111
-            name: dotnet-6.0-desktopruntime
-            version: '6.0.13'
-            state: latest
         - name: Install Git Extensions
           chocolatey.chocolatey.win_chocolatey:
-            # https://community.chocolatey.org/packages/gitextensions
             name: gitextensions
-            version: '4.0.1'
-            state: latest
+            # https://community.chocolatey.org/packages/gitextensions
+            # renovate: datasource=nuget:chocolatey depName=gitextensions
+            version: '5.1.1'
+            state: downgrade
         - name: Configure Git Extensions
           ansible.windows.win_powershell:
             script: |

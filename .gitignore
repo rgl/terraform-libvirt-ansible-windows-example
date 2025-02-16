@@ -1,4 +1,7 @@
+tmp/
+.ansible/
 .ansible-venv/
 .terraform/
 terraform.tfstate*
 tfplan
+*.log

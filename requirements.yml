@@ -1,0 +1,16 @@
+collections:
+  # see https://galaxy.ansible.com/cloud/terraform
+  - name: cloud.terraform
+    version: 3.0.0
+  # see https://galaxy.ansible.com/ansible/windows
+  - name: ansible.windows
+    version: 2.6.0
+  # see https://galaxy.ansible.com/chocolatey/chocolatey
+  - name: chocolatey.chocolatey
+    version: 1.5.3
+  # see https://galaxy.ansible.com/community/general
+  - name: community.general
+    version: 10.2.0
+  # see https://galaxy.ansible.com/community/windows
+  - name: community.windows
+    version: 2.3.0
