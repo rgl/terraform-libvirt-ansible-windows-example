@@ -36,9 +36,6 @@ virsh qemu-agent-command terraform_example '{"execute":"guest-network-get-interf
 Configure the infrastructure:
 
 ```bash
-# install the required collections.
-ansible-galaxy collection install -r requirements.yml
-
 #ansible-doc -l # list all the available modules
 ansible-inventory --list --yaml
 ansible-lint --offline --parseable playbook.yml
