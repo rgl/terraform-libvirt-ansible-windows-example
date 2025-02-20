@@ -36,7 +36,7 @@ apt-get -y install --no-install-recommends \
 apt-get clean
 rm -rf /var/lib/apt/lists/*
 activate-global-python-argcomplete
-python3 -m venv /opt/venv
+python3 -m venv --system-site-packages /opt/venv
 EOF
 ENV PATH="/opt/venv/bin:$PATH"
 
