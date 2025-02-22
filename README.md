@@ -53,6 +53,7 @@ ansible -vvv -m win_shell -a '$FormatEnumerationLimit = -1; dir env: | Sort-Obje
 # see https://docs.ansible.com/ansible-core/2.18/os_guide/windows_usage.html
 # see https://docs.ansible.com/ansible-core/2.18/os_guide/windows_faq.html#can-i-run-python-modules-on-windows-hosts
 time ansible-playbook playbook.yml #-vvv
+time ansible-playbook playbook.yml --limit wsl #-vvv
 ```
 
 Destroy the infrastructure:
