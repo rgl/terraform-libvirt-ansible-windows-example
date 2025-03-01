@@ -1,8 +1,8 @@
-# syntax=docker.io/docker/dockerfile:1.13
+# syntax=docker.io/docker/dockerfile:1.14
 
 # see https://github.com/hashicorp/terraform/releases
 # renovate: datasource=github-releases depName=hashicorp/terraform
-ARG TERRAFORM_VERSION='1.10.5'
+ARG TERRAFORM_VERSION='1.11.0'
 
 # see https://github.com/devcontainers/images/tree/main/src/base-debian/history
 FROM mcr.microsoft.com/devcontainers/base:1.0.19-bookworm
