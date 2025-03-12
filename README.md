@@ -28,7 +28,10 @@ Show information about the libvirt/qemu guest:
 virsh dumpxml terraform_example
 virsh qemu-agent-command terraform_example '{"execute":"guest-info"}' --pretty
 virsh qemu-agent-command terraform_example '{"execute":"guest-network-get-interfaces"}' --pretty
-# NB it will take some minutes until qemu-agent and winrm are available. so retry until it works.
+# NB the first command after a (re)boot will take some minutes until
+#    qemu-agent and winrm are available. the commands that follow it
+#    should execute quickly.
+# NB these command are executed as the local system user.
 ./qemu-agent-guest-exec terraform_example winrm enumerate winrm/config/listener
 ./qemu-agent-guest-exec terraform_example winrm get winrm/config
 ```

@@ -54,8 +54,10 @@ while True:
             time.sleep(0.1)
         break
     except libvirt.libvirtError as e:
-        # let it retry when the error is:
+        # let it retry when the error message is one of:
         #   libvirt.libvirtError: internal error: unable to execute QEMU agent command 'guest-exec-status': Invalid parameter 'pid'
-        if "Invalid parameter 'pid'" not in str(e):
+        #   libvirt.libvirtError: internal error: unable to execute QEMU agent command 'guest-exec-status': PID lld does not exist
+        error_message = str(e)
+        if not ("Invalid parameter 'pid'" in error_message or "PID lld does not exist" in error_message):
             raise
     time.sleep(3)
