@@ -8,8 +8,8 @@
     // default datasources.
     {
       "fileMatch": [
-        "^(roles|.github)/.+\\.yml$",
-        "renovate\\.sh"
+        "\\.yma?l$",
+        "\\.sh$",
       ],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>[^:]+?) depName=(?<depName>.+?)( versioning=(?<versioning>.+?))?( extractVersion=(?<extractVersion>.+?))?( registryUrl=(?<registryUrl>.+?))?\\s.+?[:=]\\s*[\"']?(?<currentValue>.+?)[\"']?\\s"
@@ -20,8 +20,8 @@
     // nuget:powershellgallery datasource.
     {
       "fileMatch": [
-        "^roles/.+\\.yml$",
-        "renovate\\.sh"
+        "\\.yma?l$",
+        "\\.sh$",
       ],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>nuget):powershellgallery depName=(?<depName>.+?)( versioning=(?<versioning>.+?))?( extractVersion=(?<extractVersion>.+?))?( registryUrl=(?<registryUrl>.+?))?\\s.+?[:=]\\s*[\"']?(?<currentValue>.+?)[\"']?\\s"
