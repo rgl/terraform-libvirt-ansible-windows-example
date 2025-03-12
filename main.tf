@@ -57,6 +57,15 @@ variable "base_volume_name" {
   # default = "windows-11-24h2-uefi-amd64_vagrant_box_image_0.0.0_box_0.img"
 }
 
+output "example_ip_address" {
+  value = local.example_ip_address
+}
+
+locals {
+  example_ip_cidr    = "10.17.3.0/24"
+  example_ip_address = "10.17.3.2"
+}
+
 resource "ansible_host" "example" {
   name = "example"
   groups = [
@@ -91,7 +100,7 @@ resource "libvirt_network" "example" {
   name      = var.prefix
   mode      = "nat"
   domain    = "example.test"
-  addresses = ["10.17.3.0/24"]
+  addresses = [local.example_ip_cidr]
   dhcp {
     enabled = true
   }
@@ -200,6 +209,6 @@ resource "libvirt_domain" "example" {
     network_id     = libvirt_network.example.id
     wait_for_lease = true
     hostname       = "example"
-    addresses      = ["10.17.3.2"]
+    addresses      = [local.example_ip_address]
   }
 }

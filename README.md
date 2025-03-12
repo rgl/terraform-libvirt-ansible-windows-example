@@ -36,6 +36,29 @@ virsh qemu-agent-command terraform_example '{"execute":"guest-network-get-interf
 ./qemu-agent-guest-exec terraform_example winrm get winrm/config
 ```
 
+Get the guest ssh host public keys, convert them to the knowns hosts format,
+and show their fingerprints:
+
+```bash
+./qemu-agent-guest-exec-get-sshd-public-keys.sh \
+  terraform_example \
+  | tail -1 \
+  | jq -r .sshd_public_keys \
+  | sed "s/^/$(terraform output --raw example_ip_address) /" \
+  > example-ssh-known-hosts.txt
+ssh-keygen -l -f example-ssh-known-hosts.txt
+```
+
+Using your ssh client, open a shell inside the VM and execute some commands:
+
+```bash
+ssh \
+  -o UserKnownHostsFile=example-ssh-known-hosts.txt \
+  "vagrant@$(terraform output --raw example_ip_address)"
+whoami /all
+exit
+```
+
 Configure the infrastructure:
 
 ```bash
@@ -56,6 +79,17 @@ ansible -vvv -m win_shell -a '$FormatEnumerationLimit = -1; dir env: | Sort-Obje
 # see https://docs.ansible.com/ansible-core/2.18/os_guide/windows_usage.html
 # see https://docs.ansible.com/ansible-core/2.18/os_guide/windows_faq.html#can-i-run-python-modules-on-windows-hosts
 time ansible-playbook playbook.yml #-vvv
+```
+
+Using your ssh client, open a shell inside the VM and execute some commands:
+
+```bash
+ssh \
+  -o UserKnownHostsFile=example-ssh-known-hosts.txt \
+  "vagrant@$(terraform output --raw example_ip_address)"
+whoami /all
+ver
+exit
 ```
 
 Destroy the infrastructure:

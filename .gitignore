@@ -5,3 +5,4 @@ tmp/
 terraform.tfstate*
 tfplan
 *.log
+example-ssh-known-hosts.txt
