@@ -8,7 +8,7 @@
     // default datasources.
     {
       "fileMatch": [
-        "\\.yma?l$",
+        "\\.ya?ml$",
         "\\.sh$",
       ],
       "matchStrings": [
@@ -20,7 +20,7 @@
     // nuget:powershellgallery datasource.
     {
       "fileMatch": [
-        "\\.yma?l$",
+        "\\.ya?ml$",
         "\\.sh$",
       ],
       "matchStrings": [
