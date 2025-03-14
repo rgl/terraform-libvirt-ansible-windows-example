@@ -94,14 +94,48 @@
                 $Ansible.Changed = $true
               }
 
-    - name: Install Git
+    - name: Install Meld
       chocolatey.chocolatey.win_chocolatey:
-        name: git
-        # https://community.chocolatey.org/packages/git
-        # renovate: datasource=nuget:chocolatey depName=git
-        version: '2.48.1'
+        # https://community.chocolatey.org/packages/meld
+        name: meld
+        # renovate: datasource=nuget:chocolatey depName=meld
+        version: '3.22.0'
         state: downgrade
-        package_params: /GitOnlyOnPath /NoAutoCrlf /SChannel
+
+    - name: Install Git
+      block:
+        - name: Install Git
+          chocolatey.chocolatey.win_chocolatey:
+            # https://community.chocolatey.org/packages/git
+            name: git
+            version: '2.48.1'
+            state: downgrade
+            package_params: /GitOnlyOnPath /NoAutoCrlf /SChannel
+        - name: Configure Git
+          ansible.windows.win_powershell:
+            script: |
+              Set-StrictMode -Version Latest
+              $ErrorActionPreference = 'Stop'
+              $ProgressPreference = 'SilentlyContinue'
+              $Ansible.Changed = $false
+              function Set-GitConfig($name, $value) {
+                $currentValue = git config --global $name
+                if ($LASTEXITCODE -or $currentValue -cne $value) {
+                  git config --global $name ($value -replace '\\','\\' -replace '"','\"')
+                  if ($LASTEXITCODE) {
+                    throw "failed to execute git config with exit code $LASTEXITCODE"
+                  }
+                  $Ansible.Changed = $true
+                }
+              }
+              Set-GitConfig user.name 'Rui Lopes'
+              Set-GitConfig user.email 'rgl@ruilopes.com'
+              Set-GitConfig diff.guitool meld
+              Set-GitConfig difftool.meld.path 'C:/Program Files/Meld/Meld.exe'
+              Set-GitConfig difftool.meld.cmd '"C:/Program Files/Meld/Meld.exe" "$LOCAL" "$REMOTE"'
+              Set-GitConfig merge.tool meld
+              Set-GitConfig mergetool.meld.path 'C:/Program Files/Meld/Meld.exe'
+              Set-GitConfig mergetool.meld.cmd '"C:/Program Files/Meld/Meld.exe" "$LOCAL" "$BASE" "$REMOTE" --auto-merge --output "$MERGED"'
 
     - name: Install Git Extensions
       block:
