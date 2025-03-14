@@ -48,7 +48,7 @@
         name: chocolatey
         # see https://community.chocolatey.org/packages/chocolatey
         # renovate: datasource=nuget:chocolatey depName=chocolatey
-        version: '2.4.2'
+        version: '2.4.3'
         state: downgrade
 
     - name: Install Notepad3
@@ -66,7 +66,7 @@
             name: firefox
             # https://community.chocolatey.org/packages/firefox
             # renovate: datasource=nuget:chocolatey depName=firefox
-            version: '135.0.0'
+            version: '136.0.1'
             state: downgrade
             package_params: /l:en-US
         - name: Install SetDefaultBrowser
@@ -110,7 +110,7 @@
             name: gitextensions
             # https://community.chocolatey.org/packages/gitextensions
             # renovate: datasource=nuget:chocolatey depName=gitextensions
-            version: '5.1.1'
+            version: '5.2.1'
             state: downgrade
         - name: Configure Git Extensions
           ansible.windows.win_powershell:
