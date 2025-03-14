@@ -69,16 +69,17 @@ ansible-playbook playbook.yml --syntax-check
 ansible-playbook playbook.yml --list-hosts
 
 # execute ad-hoc commands.
-ansible -vvv -m gather_facts all
-ansible -vvv -m win_ping all
-ansible -vvv -m win_command -a 'whoami /all' all
-ansible -vvv -m win_shell -a '$FormatEnumerationLimit = -1; dir env: | Sort-Object Name | Format-Table -AutoSize | Out-String -Stream -Width ([int]::MaxValue) | ForEach-Object {$_.TrimEnd()}' all
+ansible -vvv -m gather_facts windows
+ansible -vvv -m win_ping windows
+ansible -vvv -m win_command -a 'whoami /all' windows
+ansible -vvv -m win_shell -a '$FormatEnumerationLimit = -1; dir env: | Sort-Object Name | Format-Table -AutoSize | Out-String -Stream -Width ([int]::MaxValue) | ForEach-Object {$_.TrimEnd()}' windows
 
 # execute the playbook.
 # see https://docs.ansible.com/ansible-core/2.18/os_guide/windows_winrm.html#winrm-limitations
 # see https://docs.ansible.com/ansible-core/2.18/os_guide/windows_usage.html
 # see https://docs.ansible.com/ansible-core/2.18/os_guide/windows_faq.html#can-i-run-python-modules-on-windows-hosts
 time ansible-playbook playbook.yml #-vvv
+time ansible-playbook playbook.yml --limit wsl #-vvv
 ```
 
 Using your ssh client, open a shell inside the VM and execute some commands:
@@ -89,6 +90,9 @@ ssh \
   "vagrant@$(terraform output --raw example_ip_address)"
 whoami /all
 ver
+wsl -d Ubuntu-24.04 id
+wsl -d Ubuntu-24.04 uname -a
+wsl -d Ubuntu-24.04 ps -efww --forest
 exit
 ```
 

@@ -24,6 +24,7 @@ apt-get -y install --no-install-recommends \
     python3-cryptography \
     python3-libvirt \
     python3-openssl \
+    python3-paramiko \
     python3-pip \
     python3-venv \
     python3-yaml \
@@ -89,3 +90,9 @@ ansible-galaxy role install \
     -p /usr/share/ansible/roles
 rm -rf /tmp/ansible-tmp
 EOF
+
+# include the wsl connection plugin.
+ADD \
+    --chmod=644 \
+    https://github.com/rgl/community.general/raw/7dab8c8b567065dbb7d8edb77d1989e1c7c91aa6/plugins/connection/wsl.py \
+    /usr/share/ansible/collections/ansible_collections/community/general/plugins/connection/wsl.py

@@ -69,10 +69,22 @@ locals {
 resource "ansible_host" "example" {
   name = "example"
   groups = [
-    ansible_group.windows.name
+    ansible_group.windows.name,
   ]
   variables = {
     ansible_host = length(libvirt_domain.example.network_interface[0].addresses) > 0 ? libvirt_domain.example.network_interface[0].addresses[0] : ""
+  }
+}
+
+resource "ansible_host" "example-wsl-ubuntu" {
+  name = "example-wsl-ubuntu"
+  groups = [
+    ansible_group.wsl.name,
+  ]
+  variables = {
+    ansible_host     = length(libvirt_domain.example.network_interface[0].addresses) > 0 ? libvirt_domain.example.network_interface[0].addresses[0] : ""
+    wsl_distribution = "Ubuntu-24.04"
+    wsl_user         = "ubuntu"
   }
 }
 
@@ -87,6 +99,16 @@ resource "ansible_group" "windows" {
     ansible_psrp_protocol           = "http"
     ansible_psrp_message_encryption = "never"
     ansible_psrp_auth               = "credssp"
+  }
+}
+
+resource "ansible_group" "wsl" {
+  name = "wsl"
+  variables = {
+    ansible_user               = var.winrm_username
+    ansible_password           = var.winrm_password
+    ansible_connection         = "community.general.wsl"
+    ansible_python_interpreter = "/usr/bin/python3"
   }
 }
 
@@ -181,14 +203,14 @@ resource "libvirt_volume" "example_data" {
 
 # see https://github.com/dmacvicar/terraform-provider-libvirt/blob/v0.8.3/website/docs/r/domain.html.markdown
 resource "libvirt_domain" "example" {
-  name = var.prefix
+  name     = var.prefix
   machine  = "q35"
   firmware = "/usr/share/OVMF/OVMF_CODE.fd"
   cpu {
     mode = "host-passthrough"
   }
-  vcpu   = 2
-  memory = 1024
+  vcpu   = 4
+  memory = 4 * 1024
   video {
     type = "qxl"
   }
