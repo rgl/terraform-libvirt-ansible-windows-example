@@ -66,7 +66,7 @@
             name: firefox
             # https://community.chocolatey.org/packages/firefox
             # renovate: datasource=nuget:chocolatey depName=firefox
-            version: '136.0.1'
+            version: '137.0.1'
             state: downgrade
             package_params: /l:en-US
         - name: Install SetDefaultBrowser
@@ -108,7 +108,7 @@
           chocolatey.chocolatey.win_chocolatey:
             # https://community.chocolatey.org/packages/git
             name: git
-            version: '2.48.1'
+            version: '2.49.0'
             state: downgrade
             package_params: /GitOnlyOnPath /NoAutoCrlf /SChannel
         - name: Configure Git

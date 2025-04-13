@@ -2,10 +2,10 @@
 
 # see https://github.com/hashicorp/terraform/releases
 # renovate: datasource=github-releases depName=hashicorp/terraform
-ARG TERRAFORM_VERSION='1.11.2'
+ARG TERRAFORM_VERSION='1.11.4'
 
 # see https://github.com/devcontainers/images/tree/main/src/base-debian/history
-FROM mcr.microsoft.com/devcontainers/base:1.0.19-bookworm
+FROM mcr.microsoft.com/devcontainers/base:1.0.21-bookworm
 
 RUN <<'EOF'
 #!/usr/bin/bash
