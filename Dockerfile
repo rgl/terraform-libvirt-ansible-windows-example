@@ -24,6 +24,7 @@ apt-get -y install --no-install-recommends \
     python3-cryptography \
     python3-libvirt \
     python3-openssl \
+    python3-paramiko \
     python3-pip \
     python3-venv \
     python3-yaml \

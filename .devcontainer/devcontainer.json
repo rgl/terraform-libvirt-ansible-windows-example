@@ -16,6 +16,7 @@
         "hashicorp.terraform",
         "ms-python.black-formatter",
         "ms-python.python",
+        "samuelcolvin.jinjahtml",
         "streetsidesoftware.code-spell-checker"
       ]
     }

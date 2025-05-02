@@ -3,9 +3,9 @@
 # see https://github.com/ansible-collections/ansible.windows
 # see https://github.com/ansible-collections/community.windows
 
-- name: Example
-  hosts: all
-  gather_facts: false
+- name: Windows Example
+  hosts: windows
+  gather_facts: true
   tasks:
     # NB cloud-init data volume normally is assigned the D drive letter, which
     #    we want to use in our data disk.
@@ -172,3 +172,14 @@
               Set-GitExtensionsStringSetting TelemetryEnabled false
               Set-GitExtensionsStringSetting translation English
               Set-GitExtensionsStringSetting gitbindir 'C:\Program Files\Git\bin\'
+
+    - name: Install WSL
+      ansible.builtin.include_role:
+        name: wsl
+
+- name: WSL Example
+  hosts: wsl
+  gather_facts: true
+  become: true
+  roles:
+    - wsl_ubuntu
