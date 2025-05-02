@@ -30,13 +30,12 @@
   ansible.builtin.copy:
     content: |
       [user]
-      default=ubuntu
+      default={{ wsl_ubuntu_default_user }}
 
       [boot]
       systemd=true
     dest: /etc/wsl.conf
     mode: '0444'
-  register: wsl_configuration
 
 - name: Uninstall wsl-pro-service
   ansible.builtin.apt:
@@ -68,7 +67,7 @@
 - name: Reboot when required
   ansible.builtin.reboot:
     boot_time_command: systemctl show -p ActiveEnterTimestamp init.scope
-  when: wsl_configuration.changed or reboot_required.stat.exists
+  when: reboot_required.stat.exists
 
 - name: Remove unneeded packages
   ansible.builtin.apt:
@@ -126,3 +125,6 @@
           path = /etc/gitconfig.d/git-credential-manager.gitconfig
         dest: /etc/gitconfig
         mode: '0444'
+
+- name: Install docker
+  ansible.builtin.include_tasks: docker.yml
