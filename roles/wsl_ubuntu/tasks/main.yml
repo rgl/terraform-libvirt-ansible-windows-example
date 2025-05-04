@@ -80,6 +80,12 @@
     dest: /etc/profile.d/login.sh
     mode: 0444
 
+- name: Install libreadline inputrc
+  ansible.builtin.copy:
+    src: inputrc
+    dest: /etc/inputrc
+    mode: 0444
+
 - name: Install vim
   block:
     - name: Install vim
