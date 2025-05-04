@@ -74,6 +74,12 @@
     autoremove: true
     autoclean: true
 
+- name: Install login profile
+  ansible.builtin.copy:
+    src: login.sh
+    dest: /etc/profile.d/login.sh
+    mode: 0444
+
 - name: Install vim
   block:
     - name: Install vim
