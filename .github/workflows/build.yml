@@ -1,0 +1,15 @@
+name: build
+on:
+  - push
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the ansible execution environment
+        run: ./ansible-lint.sh --version
+      - name: Lint the playbook.yml playbook
+        run: ./ansible-lint.sh --offline --parseable playbook.yml
+      - name: Lint
+        run: ./mega-linter.sh

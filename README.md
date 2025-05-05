@@ -1,4 +1,10 @@
-# Usage (Ubuntu 22.04 host)
+# About
+
+[![Build status](https://github.com/rgl/terraform-libvirt-ansible-windows-example/workflows/build/badge.svg)](https://github.com/rgl/terraform-libvirt-ansible-windows-example/actions?query=workflow%3Abuild)
+
+Terraform, Ansible, and Windows integration playground.
+
+## Usage (Ubuntu 22.04 host)
 
 Create and install the [base Windows 2022 vagrant box](https://github.com/rgl/windows-vagrant).
 
@@ -100,6 +106,19 @@ Destroy the infrastructure:
 
 ```bash
 time terraform destroy -auto-approve
+```
+
+Lint the source code:
+
+```bash
+./ansible-lint.sh --offline --parseable playbook.yml
+./mega-linter.sh
+```
+
+List this repository dependencies (and which have newer versions):
+
+```bash
+GITHUB_COM_TOKEN='YOUR_GITHUB_PERSONAL_TOKEN' ./renovate.sh
 ```
 
 ## Windows Management
