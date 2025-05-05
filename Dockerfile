@@ -1,4 +1,5 @@
 # syntax=docker.io/docker/dockerfile:1.15
+# shellcheck shell=bash
 
 # see https://github.com/hashicorp/terraform/releases
 # renovate: datasource=github-releases depName=hashicorp/terraform

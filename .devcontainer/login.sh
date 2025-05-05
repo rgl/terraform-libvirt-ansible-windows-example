@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 export EDITOR=code
 export PAGER=less
 
