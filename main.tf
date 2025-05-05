@@ -34,14 +34,17 @@ provider "libvirt" {
 }
 
 variable "prefix" {
+  type    = string
   default = "terraform_example"
 }
 
 variable "winrm_username" {
+  type    = string
   default = "vagrant"
 }
 
 variable "winrm_password" {
+  type      = string
   sensitive = true
   # set the administrator password.
   # NB the administrator password will be reset to this value by the cloudbase-init SetUserPasswordPlugin plugin.
@@ -52,6 +55,7 @@ variable "winrm_password" {
 
 # NB this uses the vagrant windows image imported from https://github.com/rgl/windows-vagrant.
 variable "base_volume_name" {
+  type    = string
   default = "windows-2022-uefi-amd64_vagrant_box_image_0.0.0_box_0.img"
   # default = "windows-2025-uefi-amd64_vagrant_box_image_0.0.0_box_0.img"
   # default = "windows-11-24h2-uefi-amd64_vagrant_box_image_0.0.0_box_0.img"
