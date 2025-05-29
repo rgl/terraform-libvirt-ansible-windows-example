@@ -1,12 +1,12 @@
-# syntax=docker.io/docker/dockerfile:1.15
+# syntax=docker.io/docker/dockerfile:1.16
 # shellcheck shell=bash
 
 # see https://github.com/hashicorp/terraform/releases
 # renovate: datasource=github-releases depName=hashicorp/terraform
-ARG TERRAFORM_VERSION='1.11.4'
+ARG TERRAFORM_VERSION='1.12.1'
 
 # see https://github.com/devcontainers/images/tree/main/src/base-debian/history
-FROM mcr.microsoft.com/devcontainers/base:1.0.21-bookworm
+FROM mcr.microsoft.com/devcontainers/base:1.0.22-bookworm
 
 RUN <<'EOF'
 #!/usr/bin/bash

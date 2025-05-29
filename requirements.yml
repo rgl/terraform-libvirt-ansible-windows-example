@@ -4,13 +4,13 @@ collections:
     version: 3.1.0
   # see https://galaxy.ansible.com/ansible/windows
   - name: ansible.windows
-    version: 3.0.0
+    version: 3.1.0
   # see https://galaxy.ansible.com/chocolatey/chocolatey
   - name: chocolatey.chocolatey
     version: 1.5.3
   # see https://galaxy.ansible.com/community/general
   - name: community.general
-    version: 10.6.0
+    version: 10.7.0
   # see https://galaxy.ansible.com/community/windows
   - name: community.windows
     version: 3.0.0
