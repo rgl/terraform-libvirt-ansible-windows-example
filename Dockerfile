@@ -1,12 +1,12 @@
-# syntax=docker.io/docker/dockerfile:1.16
+# syntax=docker.io/docker/dockerfile:1.17
 # shellcheck shell=bash
 
 # see https://github.com/hashicorp/terraform/releases
 # renovate: datasource=github-releases depName=hashicorp/terraform
-ARG TERRAFORM_VERSION='1.12.1'
+ARG TERRAFORM_VERSION='1.12.2'
 
 # see https://github.com/devcontainers/images/tree/main/src/base-debian/history
-FROM mcr.microsoft.com/devcontainers/base:1.0.22-bookworm
+FROM mcr.microsoft.com/devcontainers/base:1.0.23-bookworm
 
 RUN <<'EOF'
 #!/usr/bin/bash
@@ -91,3 +91,5 @@ ansible-galaxy role install \
     -p /usr/share/ansible/roles
 rm -rf /tmp/ansible-tmp
 EOF
+
+ENV LIBVIRT_DEFAULT_URI='qemu:///system'
