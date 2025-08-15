@@ -6,7 +6,7 @@
 ARG TERRAFORM_VERSION='1.12.2'
 
 # see https://github.com/devcontainers/images/tree/main/src/base-debian/history
-FROM mcr.microsoft.com/devcontainers/base:1.0.23-bookworm
+FROM mcr.microsoft.com/devcontainers/base:1.0.25-bookworm
 
 RUN <<'EOF'
 #!/usr/bin/bash
