@@ -81,9 +81,9 @@ ansible -vvv -m win_command -a 'whoami /all' windows
 ansible -vvv -m win_shell -a '$FormatEnumerationLimit = -1; dir env: | Sort-Object Name | Format-Table -AutoSize | Out-String -Stream -Width ([int]::MaxValue) | ForEach-Object {$_.TrimEnd()}' windows
 
 # execute the playbook.
-# see https://docs.ansible.com/ansible-core/2.18/os_guide/windows_winrm.html#winrm-limitations
-# see https://docs.ansible.com/ansible-core/2.18/os_guide/windows_usage.html
-# see https://docs.ansible.com/ansible-core/2.18/os_guide/windows_faq.html#can-i-run-python-modules-on-windows-hosts
+# see https://docs.ansible.com/ansible-core/2.19/os_guide/intro_windows.html
+# see https://docs.ansible.com/ansible-core/2.19/os_guide/windows_usage.html
+# see https://docs.ansible.com/ansible-core/2.19/os_guide/windows_winrm.html#winrm-limitations
 time ansible-playbook playbook.yml #-vvv
 time ansible-playbook playbook.yml --limit wsl #-vvv
 ```
@@ -123,7 +123,7 @@ GITHUB_COM_TOKEN='YOUR_GITHUB_PERSONAL_TOKEN' ./renovate.sh
 
 ## Windows Management
 
-Ansible can use one of the native Windows management protocols: [psrp](https://docs.ansible.com/ansible-core/2.18/collections/ansible/builtin/psrp_connection.html) (recommended) or [winrm](https://docs.ansible.com/ansible-core/2.18/collections/ansible/builtin/winrm_connection.html).
+Ansible can use one of the native Windows management protocols: [psrp](https://docs.ansible.com/ansible-core/2.19/collections/ansible/builtin/psrp_connection.html) (recommended) or [winrm](https://docs.ansible.com/ansible-core/2.19/collections/ansible/builtin/winrm_connection.html).
 
 Its also advisable to use the `credssp` transport, as its the most flexible transport:
 
@@ -135,4 +135,4 @@ Its also advisable to use the `credssp` transport, as its the most flexible tran
 | ntlm        | yes            | yes                       | no                     | yes        |
 | credssp     | yes            | yes                       | yes                    | yes        |
 
-For more information see the [Ansible CredSSP documentation](https://docs.ansible.com/ansible-core/2.18/os_guide/windows_winrm.html#credssp).
+For more information see the [Ansible CredSSP documentation](https://docs.ansible.com/ansible-core/2.19/os_guide/windows_winrm.html#credssp).
