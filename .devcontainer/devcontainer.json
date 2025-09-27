@@ -9,6 +9,11 @@
     "-v=/var/run/libvirt/libvirt-sock:/var/run/libvirt/libvirt-sock"
   ],
   "postCreateCommand": "bash .devcontainer/setup.sh",
+  "features": {
+    "ghcr.io/devcontainers/features/powershell": {
+      "version": "7.4.12"
+    }
+  },
   "customizations": {
     "vscode": {
       "extensions": [
