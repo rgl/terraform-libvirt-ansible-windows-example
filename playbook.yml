@@ -57,7 +57,7 @@
         name: notepad3
         # https://community.chocolatey.org/packages/notepad3
         # renovate: datasource=nuget:chocolatey depName=notepad3
-        version: '6.25.714.1'
+        version: '6.25.822.1'
         state: downgrade
 
     - name: Install Firefox
@@ -67,7 +67,7 @@
             name: firefox
             # https://community.chocolatey.org/packages/firefox
             # renovate: datasource=nuget:chocolatey depName=firefox
-            version: '142.0.1'
+            version: '143.0.1'
             state: downgrade
             package_params: /l:en-US
         - name: Install SetDefaultBrowser
