@@ -1,4 +1,4 @@
-# syntax=docker.io/docker/dockerfile:1.18
+# syntax=docker.io/docker/dockerfile:1.19
 # shellcheck shell=bash
 
 # see https://github.com/hashicorp/terraform/releases

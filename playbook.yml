@@ -100,7 +100,7 @@
         name: meld
         # https://community.chocolatey.org/packages/meld
         # renovate: datasource=nuget:chocolatey depName=meld
-        version: '3.22.0'
+        version: '3.22.2'
         state: downgrade
 
     - name: Install Git
