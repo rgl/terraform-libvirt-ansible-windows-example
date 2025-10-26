@@ -35,7 +35,11 @@ provider "libvirt" {
 
 variable "prefix" {
   type    = string
-  default = "terraform_example"
+  default = "terraform-libvirt-ansible-windows-example"
+}
+
+variable "workspace_path" {
+  type = string
 }
 
 variable "winrm_username" {
@@ -207,9 +211,10 @@ resource "libvirt_volume" "example_data" {
 
 # see https://github.com/dmacvicar/terraform-provider-libvirt/blob/v0.8.3/website/docs/r/domain.html.markdown
 resource "libvirt_domain" "example" {
-  name     = var.prefix
-  machine  = "q35"
-  firmware = "/usr/share/OVMF/OVMF_CODE.fd"
+  name        = var.prefix
+  description = "see ${var.workspace_path}"
+  machine     = "q35"
+  firmware    = "/usr/share/OVMF/OVMF_CODE.fd"
   cpu {
     mode = "host-passthrough"
   }

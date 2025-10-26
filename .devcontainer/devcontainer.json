@@ -6,7 +6,8 @@
     "--group-add=120", // 120 is the id of the libvirt group.
     "-v=${localEnv:HOME}/.ssh/id_rsa:/home/vscode/.ssh/id_rsa:ro",
     "-v=${localEnv:HOME}/.ssh/id_rsa.pub:/home/vscode/.ssh/id_rsa.pub:ro",
-    "-v=/var/run/libvirt/libvirt-sock:/var/run/libvirt/libvirt-sock"
+    "-v=/var/run/libvirt/libvirt-sock:/var/run/libvirt/libvirt-sock",
+    "-e=TF_VAR_workspace_path=${localWorkspaceFolder}"
   ],
   "postCreateCommand": "bash .devcontainer/setup.sh",
   "features": {
