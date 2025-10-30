@@ -96,6 +96,8 @@ ssh \
   "vagrant@$(terraform output --raw example_ip_address)"
 whoami /all
 ver
+choco list
+winget list
 wsl -d Ubuntu-24.04 id
 wsl -d Ubuntu-24.04 uname -a
 wsl -d Ubuntu-24.04 ps -efww --forest

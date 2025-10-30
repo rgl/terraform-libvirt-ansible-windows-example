@@ -83,6 +83,39 @@
             $Ansible.Changed = $true
           }
 
+    - name: Install WinGet Client
+      # NB this is installed as a windows store app (a appx).
+      # NB since this is installing winget from the windows store, the actual
+      #    winget version might not match the Microsoft.WinGet.Client
+      #    powershell module version.
+      # NB winget.exe is available in your local app data directory , e.g., at:
+      #       C:\Users\vagrant\AppData\Local\Microsoft\WindowsApps\winget.exe
+      # see https://learn.microsoft.com/en-us/windows/package-manager/winget/#install-winget
+      # see https://learn.microsoft.com/en-us/windows/package-manager/winget/#install-winget-on-windows-sandbox
+      # see Get-Command -Module Microsoft.WinGet.Client
+      # see CmdletsToExport at:
+      #       https://github.com/microsoft/winget-cli/blob/v1.12.350/src/PowerShell/Microsoft.WinGet.Client/ModuleFiles/Microsoft.WinGet.Client.psd1#L76
+      # see WinGetPackageManagerCmdlet at:
+      #       https://github.com/microsoft/winget-cli/blob/v1.12.350/src/PowerShell/Microsoft.WinGet.Client.Cmdlets/Cmdlets/Common/WinGetPackageManagerCmdlet.cs
+      vars:
+        # see https://github.com/microsoft/winget-cli/releases
+        # see https://www.powershellgallery.com/packages/Microsoft.WinGet.Client
+        # renovate: datasource=nuget:powershellgallery depName=Microsoft.WinGet.Client
+        winget_version: '1.12.350'
+      block:
+        - name: Install WinGet Client PowerShell Module
+          community.windows.win_psmodule:
+            name: Microsoft.WinGet.Client
+            required_version: '{{ winget_version }}'
+            accept_license: true
+          register: winget_client
+        - name: Install WinGet Client
+          when: winget_client.changed # noqa: no-handler
+          ansible.windows.win_powershell:
+            script: |
+              Repair-WinGetPackageManager -Verbose -AllUsers -Version 'v{{ winget_version }}'
+              Add-AppxPackage -Verbose -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
+
     - name: Install Chocolatey
       chocolatey.chocolatey.win_chocolatey:
         name: chocolatey
