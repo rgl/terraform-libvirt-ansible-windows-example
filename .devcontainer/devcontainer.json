@@ -23,6 +23,7 @@
         "hashicorp.terraform",
         "ms-python.black-formatter",
         "ms-python.python",
+        "redhat.ansible",
         "samuelcolvin.jinjahtml",
         "streetsidesoftware.code-spell-checker"
       ]
