@@ -44,6 +44,45 @@
             file_system: ntfs
             new_label: data
 
+    - name: Install the NuGet PowerShell Package Provider
+      ansible.windows.win_powershell:
+        script: |
+          Set-StrictMode -Version Latest
+          $ErrorActionPreference = 'Stop'
+          $ProgressPreference = 'SilentlyContinue'
+          $Ansible.Changed = $false
+          $nugetPackageProvider = Get-PackageProvider | Where-Object {$_.Name -eq 'NuGet'}
+          if (!$nugetPackageProvider) {
+            Get-PackageProvider -Name NuGet -Force | Out-Null
+            $Ansible.Changed = $true
+          }
+
+    - name: Trust the PSGallery PSRepository
+      ansible.windows.win_powershell:
+        # see https://www.powershellgallery.com
+        script: |
+          Set-StrictMode -Version Latest
+          # NB we cannot set this to Stop because something is broken inside
+          #    Get-PSRepository that causes it to fail with:
+          #       PowerShell Gallery is currently unavailable.  Please try again later.
+          $ErrorActionPreference = 'Continue'
+          $ProgressPreference = 'SilentlyContinue'
+          $Ansible.Changed = $false
+          $repository = Get-PSRepository -Name PSGallery
+          if (!$repository) {
+            Unregister-PSRepository PSGallery -ErrorAction SilentlyContinue
+            Register-PSRepository -Default
+            $Ansible.Changed = $true
+            $repository = Get-PSRepository -Name PSGallery
+            if (!$repository) {
+              throw "unknown error getting the PSGallery PSRepository"
+            }
+          }
+          if ($repository.InstallationPolicy -ne 'Trusted') {
+            Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+            $Ansible.Changed = $true
+          }
+
     - name: Install Chocolatey
       chocolatey.chocolatey.win_chocolatey:
         name: chocolatey
