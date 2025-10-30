@@ -19,6 +19,7 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "github.vscode-github-actions",
         "hashicorp.terraform",
         "ms-python.black-formatter",
         "ms-python.python",
