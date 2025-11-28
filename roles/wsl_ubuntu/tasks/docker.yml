@@ -22,7 +22,7 @@
       deb
       [arch=amd64 signed-by=/etc/apt/keyrings/download.docker.com.asc]
       https://download.docker.com/linux/ubuntu
-      {{ ansible_distribution_release }}
+      {{ ansible_facts['distribution_release'] }}
       stable
     state: present
 

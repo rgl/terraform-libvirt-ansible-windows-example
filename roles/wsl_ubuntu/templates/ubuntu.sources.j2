@@ -15,15 +15,15 @@ Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 Types: deb
 URIs: {{ wsl_ubuntu_apt_sources_url }}
 Suites:
-  {{ ansible_distribution_release }}
-  {{ ansible_distribution_release }}-updates
-  {{ ansible_distribution_release }}-backports
+  {{ ansible_facts['distribution_release'] }}
+  {{ ansible_facts['distribution_release'] }}-updates
+  {{ ansible_facts['distribution_release'] }}-backports
 {{ components }}
 {{ signed_by }}
 
 Types: deb
 URIs: http://security.ubuntu.com/ubuntu
 Suites:
-  {{ ansible_distribution_release }}-security
+  {{ ansible_facts['distribution_release'] }}-security
 {{ components }}
 {{ signed_by }}

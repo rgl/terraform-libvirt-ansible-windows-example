@@ -19,7 +19,7 @@
     dest: '%USERPROFILE%\.wslconfig'
 
 - name: Install WSL Dependencies (Windows Server)
-  when: ansible_os_installation_type != 'Client'
+  when: ansible_facts['os_installation_type'] != 'Client'
   block:
     - name: Install Hyper-V
       ansible.windows.win_feature:
@@ -28,13 +28,13 @@
       register: wsl_hyper_v_win_feature
     - name: Install Windows Containers feature
       # NB only required on windows 2025 or newer.
-      when: ansible_distribution_version is version('10.0.26100.0', '>=')
+      when: ansible_facts['distribution_version'] is version('10.0.26100.0', '>=')
       ansible.windows.win_feature:
         name: Containers
       register: wsl_containers_win_feature
     - name: Install WSL Windows feature
       # NB only required on windows older than windows 2025.
-      when: ansible_distribution_version is version('10.0.26100.0', '<')
+      when: ansible_facts['distribution_version'] is version('10.0.26100.0', '<')
       ansible.windows.win_feature:
         # NB although in Windows 11 Client this is only required for WSL1, in
         #    Windows 2022 Server its required, or else, wsl.exe will fail with:
@@ -49,7 +49,7 @@
       ansible.windows.win_reboot:
 
 - name: Install WSL Dependencies (Windows Client)
-  when: ansible_os_installation_type == 'Client'
+  when: ansible_facts['os_installation_type'] == 'Client'
   block:
     - name: Install Virtual Machine Platform
       ansible.windows.win_optional_feature:
@@ -78,7 +78,7 @@
   #       module could not be loaded due to the following error: [Operation
   #       is not supported on this platform. (0x80131539)]
   ansible.windows.win_powershell:
-    executable: "{{ ansible_distribution_version is version('10.0.26100.0', '>=') and 'pwsh' or 'powershell' }}"
+    executable: "{{ ansible_facts['distribution_version'] is version('10.0.26100.0', '>=') and 'pwsh' or 'powershell' }}"
     script: "{{ lookup('file', 'install-wsl.ps1') }}"
     parameters:
       version: '{{ wsl_version }}'

@@ -1,6 +1,6 @@
 # see https://github.com/hashicorp/terraform
 terraform {
-  required_version = "1.13.4"
+  required_version = "1.14.0"
   required_providers {
     # see https://registry.terraform.io/providers/hashicorp/random
     # see https://github.com/hashicorp/terraform-provider-random
@@ -100,7 +100,7 @@ resource "ansible_group" "windows" {
   name = "windows"
   variables = {
     # connection configuration.
-    # see https://docs.ansible.com/ansible-core/2.19/collections/ansible/builtin/psrp_connection.html
+    # see https://docs.ansible.com/ansible-core/2.20/collections/ansible/builtin/psrp_connection.html
     ansible_user                    = var.winrm_username
     ansible_password                = var.winrm_password
     ansible_connection              = "psrp"

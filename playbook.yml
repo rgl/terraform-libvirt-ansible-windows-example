@@ -1,6 +1,6 @@
-# see https://docs.ansible.com/ansible-core/2.19/os_guide/intro_windows.html
-# see https://docs.ansible.com/ansible-core/2.19/os_guide/windows_usage.html
-# see https://docs.ansible.com/ansible-core/2.19/os_guide/windows_winrm.html#winrm-limitations
+# see https://docs.ansible.com/ansible-core/2.20/os_guide/intro_windows.html
+# see https://docs.ansible.com/ansible-core/2.20/os_guide/windows_usage.html
+# see https://docs.ansible.com/ansible-core/2.20/os_guide/windows_winrm.html#winrm-limitations
 # see https://github.com/ansible-collections/ansible.windows
 # see https://github.com/ansible-collections/community.windows
 
@@ -139,7 +139,7 @@
             name: firefox
             # https://community.chocolatey.org/packages/firefox
             # renovate: datasource=nuget:chocolatey depName=firefox
-            version: '144.0.2'
+            version: '145.0.2'
             state: downgrade
             package_params: /l:en-US
         - name: Install SetDefaultBrowser
@@ -182,7 +182,7 @@
             name: git
             # https://community.chocolatey.org/packages/git
             # renovate: datasource=nuget:chocolatey depName=git
-            version: '2.51.2'
+            version: '2.52.0'
             state: downgrade
             package_params: /GitOnlyOnPath /NoAutoCrlf /SChannel
         - name: Configure Git

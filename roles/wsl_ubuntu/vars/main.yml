@@ -8,8 +8,8 @@ wsl_ubuntu_apt_sources_url: http://mirrors.up.pt/ubuntu
 
 # see https://github.com/moby/moby/releases
 # renovate: datasource=github-releases depName=moby/moby
-wsl_ubuntu_docker_version: '28.5.1'
+wsl_ubuntu_docker_version: '29.0.4'
 
 # see https://github.com/docker/compose/releases
 # renovate: datasource=github-releases depName=docker/compose
-wsl_ubuntu_docker_compose_version: '2.40.2'
+wsl_ubuntu_docker_compose_version: '2.40.3'
