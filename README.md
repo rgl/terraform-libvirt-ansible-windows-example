@@ -4,7 +4,7 @@
 
 Terraform, Ansible, and Windows integration playground.
 
-## Usage (Ubuntu 22.04 host)
+## Usage (Ubuntu 24.04 host)
 
 Create and install the [base Windows 2022 vagrant box](https://github.com/rgl/windows-vagrant).
 
