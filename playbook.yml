@@ -94,14 +94,14 @@
       # see https://learn.microsoft.com/en-us/windows/package-manager/winget/#install-winget-on-windows-sandbox
       # see Get-Command -Module Microsoft.WinGet.Client
       # see CmdletsToExport at:
-      #       https://github.com/microsoft/winget-cli/blob/v1.12.350/src/PowerShell/Microsoft.WinGet.Client/ModuleFiles/Microsoft.WinGet.Client.psd1#L76
+      #       https://github.com/microsoft/winget-cli/blob/v1.12.440/src/PowerShell/Microsoft.WinGet.Client/ModuleFiles/Microsoft.WinGet.Client.psd1#L76
       # see WinGetPackageManagerCmdlet at:
-      #       https://github.com/microsoft/winget-cli/blob/v1.12.350/src/PowerShell/Microsoft.WinGet.Client.Cmdlets/Cmdlets/Common/WinGetPackageManagerCmdlet.cs
+      #       https://github.com/microsoft/winget-cli/blob/v1.12.440/src/PowerShell/Microsoft.WinGet.Client.Cmdlets/Cmdlets/Common/WinGetPackageManagerCmdlet.cs
       vars:
         # see https://github.com/microsoft/winget-cli/releases
         # see https://www.powershellgallery.com/packages/Microsoft.WinGet.Client
         # renovate: datasource=nuget:powershellgallery depName=Microsoft.WinGet.Client
-        winget_version: '1.12.350'
+        winget_version: '1.12.440'
       block:
         - name: Install WinGet Client PowerShell Module
           community.windows.win_psmodule:
@@ -139,7 +139,7 @@
             name: firefox
             # https://community.chocolatey.org/packages/firefox
             # renovate: datasource=nuget:chocolatey depName=firefox
-            version: '146.0.1'
+            version: '147.0.0'
             state: downgrade
             package_params: /l:en-US
         - name: Install SetDefaultBrowser
