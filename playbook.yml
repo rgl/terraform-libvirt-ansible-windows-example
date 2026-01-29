@@ -139,7 +139,7 @@
             name: firefox
             # https://community.chocolatey.org/packages/firefox
             # renovate: datasource=nuget:chocolatey depName=firefox
-            version: '147.0.0'
+            version: '147.0.2'
             state: downgrade
             package_params: /l:en-US
         - name: Install SetDefaultBrowser
