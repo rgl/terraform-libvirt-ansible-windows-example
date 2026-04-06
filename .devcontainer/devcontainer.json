@@ -12,8 +12,8 @@
   "postCreateCommand": "bash .devcontainer/setup.sh",
   "features": {
     "ghcr.io/devcontainers/features/powershell": {
-      // renovate: datasource=github-releases depName=PowerShell/PowerShell extractVersion=^v(?<version>7\.4\..+)
-      "version": "7.4.13"
+      // renovate: datasource=github-releases depName=PowerShell/PowerShell extractVersion=^v(?<version>7\.6\..+)
+      "version": "7.6.0"
     }
   },
   "customizations": {
