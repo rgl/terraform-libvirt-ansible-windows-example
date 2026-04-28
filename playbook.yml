@@ -98,23 +98,41 @@
       # see WinGetPackageManagerCmdlet at:
       #       https://github.com/microsoft/winget-cli/blob/v1.12.440/src/PowerShell/Microsoft.WinGet.Client.Cmdlets/Cmdlets/Common/WinGetPackageManagerCmdlet.cs
       vars:
-        # see https://github.com/microsoft/winget-cli/releases
         # see https://www.powershellgallery.com/packages/Microsoft.WinGet.Client
         # renovate: datasource=nuget:powershellgallery depName=Microsoft.WinGet.Client
-        winget_version: '1.12.440'
+        winget_ps_version: '1.12.440'
+        # see https://github.com/microsoft/winget-cli/releases
+        # renovate: datasource=github-releases depName=microsoft/winget-cli
+        winget_cli_version: '1.28.240'
       block:
         - name: Install WinGet Client PowerShell Module
           community.windows.win_psmodule:
             name: Microsoft.WinGet.Client
-            required_version: '{{ winget_version }}'
+            required_version: '{{ winget_ps_version }}'
             accept_license: true
           register: winget_client
         - name: Install WinGet Client
-          when: winget_client.changed # noqa: no-handler
           ansible.windows.win_powershell:
+            parameters:
+              version: '{{ winget_cli_version }}'
+              forceInstallation: '{{ winget_client.changed }}'
             script: |
-              Repair-WinGetPackageManager -Verbose -AllUsers -Version 'v{{ winget_version }}'
+              param(
+                [string]$version,
+                [bool]$forceInstallation
+              )
+              # e.g. v1.28.240
+              $actualVersionText = winget.exe --version
+              if ($actualVersionText -notmatch '^v(.+)') {
+                $forceInstallation = $true
+              }
+              if (-not $forceInstallation -and $Matches[1] -eq $version) {
+                $Ansible.Changed = $false
+                Exit 0
+              }
+              Repair-WinGetPackageManager -Verbose -AllUsers -Version "v$version"
               Add-AppxPackage -Verbose -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
+              $Ansible.Changed = $true
 
     - name: Install Chocolatey
       chocolatey.chocolatey.win_chocolatey:
@@ -129,7 +147,7 @@
         name: notepad3
         # https://community.chocolatey.org/packages/notepad3
         # renovate: datasource=nuget:chocolatey depName=notepad3
-        version: '6.25.822.1'
+        version: '7.26.426.1'
         state: downgrade
 
     - name: Install Firefox
@@ -139,7 +157,7 @@
             name: firefox
             # https://community.chocolatey.org/packages/firefox
             # renovate: datasource=nuget:chocolatey depName=firefox
-            version: '149.0.0'
+            version: '150.0.0'
             state: downgrade
             package_params: /l:en-US
         - name: Install SetDefaultBrowser
@@ -182,7 +200,7 @@
             name: git
             # https://community.chocolatey.org/packages/git
             # renovate: datasource=nuget:chocolatey depName=git
-            version: '2.53.0.2'
+            version: '2.54.0'
             state: downgrade
             package_params: /GitOnlyOnPath /NoAutoCrlf /SChannel
         - name: Configure Git
