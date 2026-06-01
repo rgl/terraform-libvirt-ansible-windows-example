@@ -1,3 +1,4 @@
-ansible-core==2.20.5    # see https://pypi.org/project/ansible-core/
+# NB we cannot upgrade to ansible-core 2.21.x until https://github.com/ansible-collections/cloud.terraform/issues/214 is fixed.
+ansible-core==2.20.6    # see https://pypi.org/project/ansible-core/
 ansible-lint==26.4.0    # see https://pypi.org/project/ansible-lint/
 pypsrp[credssp]==0.9.1  # see https://pypi.org/project/pypsrp/

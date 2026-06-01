@@ -1,18 +1,18 @@
 # see https://github.com/hashicorp/terraform
 terraform {
-  required_version = "1.14.9"
+  required_version = "1.15.5"
   required_providers {
     # see https://registry.terraform.io/providers/hashicorp/random
     # see https://github.com/hashicorp/terraform-provider-random
     random = {
       source  = "hashicorp/random"
-      version = "3.8.1"
+      version = "3.9.0"
     }
     # see https://registry.terraform.io/providers/hashicorp/cloudinit
     # see https://github.com/hashicorp/terraform-provider-cloudinit
     cloudinit = {
       source  = "hashicorp/cloudinit"
-      version = "2.3.7"
+      version = "2.4.0"
     }
     # see https://registry.terraform.io/providers/dmacvicar/libvirt
     # see https://github.com/dmacvicar/terraform-provider-libvirt
@@ -143,8 +143,8 @@ resource "libvirt_network" "example" {
 # a multipart cloudbase-init cloud-config.
 # NB the parts are executed by their declared order.
 # see https://github.com/cloudbase/cloudbase-init
-# see https://cloudbase-init.readthedocs.io/en/1.1.6/userdata.html#cloud-config
-# see https://cloudbase-init.readthedocs.io/en/1.1.6/userdata.html#userdata
+# see https://cloudbase-init.readthedocs.io/en/1.1.8/userdata.html#cloud-config
+# see https://cloudbase-init.readthedocs.io/en/1.1.8/userdata.html#userdata
 # see https://registry.terraform.io/providers/hashicorp/cloudinit/latest/docs/data-sources/config
 # see https://www.terraform.io/docs/configuration/expressions.html#string-literals
 data "cloudinit_config" "example" {

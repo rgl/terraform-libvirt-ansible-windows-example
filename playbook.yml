@@ -90,6 +90,8 @@
       #    powershell module version.
       # NB winget.exe is available in your local app data directory , e.g., at:
       #       C:\Users\vagrant\AppData\Local\Microsoft\WindowsApps\winget.exe
+      # NB ansible does not yet have a win_winget module to manage winget packages.
+      #    see https://github.com/ansible-collections/community.windows/issues/611
       # see https://learn.microsoft.com/en-us/windows/package-manager/winget/#install-winget
       # see https://learn.microsoft.com/en-us/windows/package-manager/winget/#install-winget-on-windows-sandbox
       # see Get-Command -Module Microsoft.WinGet.Client
@@ -139,7 +141,7 @@
         name: chocolatey
         # see https://community.chocolatey.org/packages/chocolatey
         # renovate: datasource=nuget:chocolatey depName=chocolatey
-        version: '2.7.1'
+        version: '2.7.2'
         state: downgrade
 
     - name: Install Notepad3
@@ -157,7 +159,7 @@
             name: firefox
             # https://community.chocolatey.org/packages/firefox
             # renovate: datasource=nuget:chocolatey depName=firefox
-            version: '150.0.0'
+            version: '151.0.2'
             state: downgrade
             package_params: /l:en-US
         - name: Install SetDefaultBrowser
