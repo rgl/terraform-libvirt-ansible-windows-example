@@ -61,6 +61,20 @@
     dest: /etc/wsl.conf
     mode: '0444'
 
+- name: Configure the sudo group
+  ansible.builtin.copy:
+    content: |
+      %sudo ALL=(ALL) NOPASSWD:ALL
+    dest: /etc/sudoers.d/sudo
+    mode: '0444'
+
+- name: Configure the default user
+  ansible.builtin.user:
+    name: "{{ wsl_ubuntu_default_user }}"
+    shell: /usr/bin/bash
+    groups: sudo
+    append: true
+
 - name: Uninstall wsl-pro-service
   ansible.builtin.apt:
     name: wsl-pro-service

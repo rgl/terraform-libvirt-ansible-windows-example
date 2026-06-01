@@ -1,6 +1,6 @@
 # NB you can remove a distro altogether with, e.g.:
-#       wsl --unregister Ubuntu-24.04
-#       Remove-Item -Recurse C:\Wsl\Ubuntu-24.04
+#       wsl --unregister Ubuntu-26.04
+#       Remove-Item -Recurse C:\Wsl\Ubuntu-26.04
 # NB we can configure ubuntu using cloud-init.
 #    see https://documentation.ubuntu.com/wsl/en/stable/howto/cloud-init/
 #    see https://cloudinit.readthedocs.io/en/latest/reference/datasources/wsl.html

@@ -91,7 +91,7 @@ resource "ansible_host" "example-wsl-ubuntu" {
   ]
   variables = {
     ansible_host     = length(libvirt_domain.example.network_interface[0].addresses) > 0 ? libvirt_domain.example.network_interface[0].addresses[0] : ""
-    wsl_distribution = "Ubuntu-24.04"
+    wsl_distribution = "Ubuntu-26.04"
     wsl_user         = "ubuntu"
   }
 }

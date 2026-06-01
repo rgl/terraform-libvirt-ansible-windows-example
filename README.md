@@ -99,10 +99,10 @@ whoami /all
 ver
 choco list
 winget list
-wsl -d Ubuntu-24.04 id
-wsl -d Ubuntu-24.04 uname -a
-wsl -d Ubuntu-24.04 ps -efww --forest
-wsl -d Ubuntu-24.04 docker run --rm hello-world
+wsl -d Ubuntu-26.04 id
+wsl -d Ubuntu-26.04 uname -a
+wsl -d Ubuntu-26.04 ps -efww --forest
+wsl -d Ubuntu-26.04 docker run --rm hello-world
 exit
 ```
 
