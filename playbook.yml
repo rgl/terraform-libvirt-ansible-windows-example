@@ -96,16 +96,16 @@
       # see https://learn.microsoft.com/en-us/windows/package-manager/winget/#install-winget-on-windows-sandbox
       # see Get-Command -Module Microsoft.WinGet.Client
       # see CmdletsToExport at:
-      #       https://github.com/microsoft/winget-cli/blob/v1.12.440/src/PowerShell/Microsoft.WinGet.Client/ModuleFiles/Microsoft.WinGet.Client.psd1#L76
+      #       https://github.com/microsoft/winget-cli/blob/v1.29.280/src/PowerShell/Microsoft.WinGet.Client/ModuleFiles/Microsoft.WinGet.Client.psd1#L76
       # see WinGetPackageManagerCmdlet at:
-      #       https://github.com/microsoft/winget-cli/blob/v1.12.440/src/PowerShell/Microsoft.WinGet.Client.Cmdlets/Cmdlets/Common/WinGetPackageManagerCmdlet.cs
+      #       https://github.com/microsoft/winget-cli/blob/v1.29.280/src/PowerShell/Microsoft.WinGet.Client.Cmdlets/Cmdlets/Common/WinGetPackageManagerCmdlet.cs
       vars:
         # see https://www.powershellgallery.com/packages/Microsoft.WinGet.Client
         # renovate: datasource=nuget:powershellgallery depName=Microsoft.WinGet.Client
-        winget_ps_version: '1.12.440'
+        winget_ps_version: '1.28.240'
         # see https://github.com/microsoft/winget-cli/releases
         # renovate: datasource=github-releases depName=microsoft/winget-cli
-        winget_cli_version: '1.28.240'
+        winget_cli_version: '1.29.280'
       block:
         - name: Install WinGet Client PowerShell Module
           community.windows.win_psmodule:
@@ -123,7 +123,7 @@
                 [string]$version,
                 [bool]$forceInstallation
               )
-              # e.g. v1.28.240
+              # e.g. v1.29.280
               $actualVersionText = winget.exe --version
               if ($actualVersionText -notmatch '^v(.+)') {
                 $forceInstallation = $true
@@ -141,7 +141,7 @@
         name: chocolatey
         # see https://community.chocolatey.org/packages/chocolatey
         # renovate: datasource=nuget:chocolatey depName=chocolatey
-        version: '2.7.2'
+        version: '2.7.3'
         state: downgrade
 
     - name: Install Notepad3
@@ -149,7 +149,7 @@
         name: notepad3
         # https://community.chocolatey.org/packages/notepad3
         # renovate: datasource=nuget:chocolatey depName=notepad3
-        version: '7.26.426.1'
+        version: '7.26.602.1'
         state: downgrade
 
     - name: Install Firefox
@@ -159,7 +159,7 @@
             name: firefox
             # https://community.chocolatey.org/packages/firefox
             # renovate: datasource=nuget:chocolatey depName=firefox
-            version: '151.0.2'
+            version: '152.0.4'
             state: downgrade
             package_params: /l:en-US
         - name: Install SetDefaultBrowser
@@ -202,7 +202,7 @@
             name: git
             # https://community.chocolatey.org/packages/git
             # renovate: datasource=nuget:chocolatey depName=git
-            version: '2.54.0'
+            version: '2.55.0'
             state: downgrade
             package_params: /GitOnlyOnPath /NoAutoCrlf /SChannel
         - name: Configure Git
@@ -239,7 +239,7 @@
             name: gitextensions
             # https://community.chocolatey.org/packages/gitextensions
             # renovate: datasource=nuget:chocolatey depName=gitextensions
-            version: '5.2.1'
+            version: '7.0.1.20260616'
             state: downgrade
         - name: Configure Git Extensions
           ansible.windows.win_powershell:
