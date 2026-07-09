@@ -103,6 +103,9 @@ wsl -d Ubuntu-26.04 id
 wsl -d Ubuntu-26.04 uname -a
 wsl -d Ubuntu-26.04 ps -efww --forest
 wsl -d Ubuntu-26.04 docker run --rm hello-world
+wsl --list
+wslc run --rm hello-world
+hcsdiag list
 exit
 ```
 
