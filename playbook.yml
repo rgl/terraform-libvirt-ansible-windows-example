@@ -102,7 +102,7 @@
       vars:
         # see https://www.powershellgallery.com/packages/Microsoft.WinGet.Client
         # renovate: datasource=nuget:powershellgallery depName=Microsoft.WinGet.Client
-        winget_ps_version: '1.28.240'
+        winget_ps_version: '1.29.280'
         # see https://github.com/microsoft/winget-cli/releases
         # renovate: datasource=github-releases depName=microsoft/winget-cli
         winget_cli_version: '1.29.280'
@@ -180,7 +180,7 @@
             name: firefox
             # https://community.chocolatey.org/packages/firefox
             # renovate: datasource=nuget:chocolatey depName=firefox
-            version: '152.0.4'
+            version: '153.0.4'
             state: downgrade
             package_params: /l:en-US
         - name: Install SetDefaultBrowser
@@ -223,7 +223,7 @@
             name: git
             # https://community.chocolatey.org/packages/git
             # renovate: datasource=nuget:chocolatey depName=git
-            version: '2.55.0'
+            version: '2.55.0.4'
             state: downgrade
             package_params: /GitOnlyOnPath /NoAutoCrlf /SChannel
         - name: Configure Git
@@ -260,7 +260,7 @@
             name: gitextensions
             # https://community.chocolatey.org/packages/gitextensions
             # renovate: datasource=nuget:chocolatey depName=gitextensions
-            version: '7.0.1.20260616'
+            version: '7.2.0'
             state: downgrade
         - name: Configure Git Extensions
           ansible.windows.win_powershell:

@@ -71,7 +71,7 @@ Configure the infrastructure:
 ansible-doc --list                  # list all the available modules
 ansible-doc --list --type inventory # list all the available inventory plugins
 ansible-inventory --list --yaml
-ansible-lint --offline --parseable playbook.yml
+ansible-lint --offline --format=pep8 playbook.yml
 ansible-playbook playbook.yml --syntax-check
 ansible-playbook playbook.yml --list-hosts
 
