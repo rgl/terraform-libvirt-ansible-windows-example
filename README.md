@@ -105,6 +105,12 @@ wsl -d Ubuntu-26.04 ps -efww --forest
 wsl -d Ubuntu-26.04 docker run --rm hello-world
 wsl --list
 wslc run --rm hello-world
+wslc system session list
+wslc system session run id
+wslc system session run uname -a
+wslc system session run cat /etc/os-release
+wslc system session run ps -efww --forest
+wslc system session run docker info
 hcsdiag list
 exit
 ```
