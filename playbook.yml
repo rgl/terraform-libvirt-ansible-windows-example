@@ -157,21 +157,27 @@
         # see https://community.chocolatey.org/packages/procexp
         # see https://learn.microsoft.com/en-us/sysinternals/downloads/process-explorer
         # NB setting the version is moot because the upstream is not versioned.
+        # NB setting ignore_checksums is required because the upstream is not versioned.
         name: procexp
+        ignore_checksums: true
 
     - name: Install Process Monitor
       chocolatey.chocolatey.win_chocolatey:
         # see https://community.chocolatey.org/packages/procmon
         # see https://learn.microsoft.com/en-us/sysinternals/downloads/procmon
         # NB setting the version is moot because the upstream is not versioned.
+        # NB setting ignore_checksums is required because the upstream is not versioned.
         name: procmon
+        ignore_checksums: true
 
     - name: Install WinObj
       chocolatey.chocolatey.win_chocolatey:
         # see https://community.chocolatey.org/packages/winobj
         # see https://learn.microsoft.com/en-us/sysinternals/downloads/winobj
         # NB setting the version is moot because the upstream is not versioned.
+        # NB setting ignore_checksums is required because the upstream is not versioned.
         name: winobj
+        ignore_checksums: true
 
     - name: Install Firefox
       block:
