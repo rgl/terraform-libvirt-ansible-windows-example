@@ -141,7 +141,7 @@
         name: chocolatey
         # see https://community.chocolatey.org/packages/chocolatey
         # renovate: datasource=nuget:chocolatey depName=chocolatey
-        version: '2.7.3'
+        version: '2.7.4'
         state: downgrade
 
     - name: Install Notepad3
@@ -186,7 +186,7 @@
             name: firefox
             # https://community.chocolatey.org/packages/firefox
             # renovate: datasource=nuget:chocolatey depName=firefox
-            version: '153.0.4'
+            version: '154.0.1'
             state: downgrade
             package_params: /l:en-US
         - name: Install SetDefaultBrowser
@@ -229,7 +229,7 @@
             name: git
             # https://community.chocolatey.org/packages/git
             # renovate: datasource=nuget:chocolatey depName=git
-            version: '2.55.0.4'
+            version: '2.55.0.5'
             state: downgrade
             package_params: /GitOnlyOnPath /NoAutoCrlf /SChannel
         - name: Configure Git
