@@ -111,6 +111,10 @@ wslc system session run uname -a
 wslc system session run cat /etc/os-release
 wslc system session run ps -efww --forest
 wslc system session run docker info
+wslc system session run docker images list
+wslc system session run ctr info
+wslc system session run ctr namespaces list
+wslc system session run ctr images list
 hcsdiag list
 exit
 ```
