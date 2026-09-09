@@ -8,6 +8,12 @@ terraform {
       source  = "hashicorp/random"
       version = "3.9.0"
     }
+    # see https://registry.terraform.io/providers/northwood-labs/corefunc
+    # see https://github.com/northwood-labs/terraform-provider-corefunc
+    corefunc = {
+      source  = "northwood-labs/corefunc"
+      version = "2.3.0"
+    }
     # see https://registry.terraform.io/providers/hashicorp/cloudinit
     # see https://github.com/hashicorp/terraform-provider-cloudinit
     cloudinit = {
@@ -18,7 +24,7 @@ terraform {
     # see https://github.com/dmacvicar/terraform-provider-libvirt
     libvirt = {
       source  = "dmacvicar/libvirt"
-      version = "0.8.3"
+      version = "0.9.9"
     }
     # see https://registry.terraform.io/providers/ansible/ansible
     # see https://github.com/ansible/terraform-provider-ansible
@@ -70,8 +76,20 @@ output "example_ip_address" {
 }
 
 locals {
-  example_ip_cidr    = "10.17.3.0/24"
-  example_ip_address = "10.17.3.2"
+  cpu_sockets = 1
+  cpu_cores   = 4
+  cpu_threads = 1
+  memory_mb   = 4 * 1024
+}
+
+locals {
+  example_ip_cidr = "10.17.3.0/24"
+  example_ip_address = one(flatten([
+    for interface in data.libvirt_domain_interface_addresses.example.interfaces : [
+      for addr in interface.addrs : addr.addr
+      if addr.type == "ipv4" && provider::corefunc::net_cidr_contains(local.example_ip_cidr, addr.addr)
+    ]
+  ]))
 }
 
 # see https://gitlab.com/libosinfo/osinfo-db/-/blob/main/data/os/microsoft.com/win-2k22.xml.in
@@ -93,7 +111,7 @@ resource "ansible_host" "example" {
     ansible_group.windows.name,
   ]
   variables = {
-    ansible_host = length(libvirt_domain.example.network_interface[0].addresses) > 0 ? libvirt_domain.example.network_interface[0].addresses[0] : ""
+    ansible_host = local.example_ip_address
   }
 }
 
@@ -103,7 +121,7 @@ resource "ansible_host" "example-wsl-ubuntu" {
     ansible_group.wsl.name,
   ]
   variables = {
-    ansible_host     = length(libvirt_domain.example.network_interface[0].addresses) > 0 ? libvirt_domain.example.network_interface[0].addresses[0] : ""
+    ansible_host     = local.example_ip_address
     wsl_distribution = "Ubuntu-26.04"
     wsl_user         = "ubuntu"
   }
@@ -138,19 +156,37 @@ resource "random_id" "example" {
   byte_length = 10
 }
 
-# see https://github.com/dmacvicar/terraform-provider-libvirt/blob/v0.8.3/website/docs/r/network.markdown
+# see https://registry.terraform.io/providers/dmacvicar/libvirt/0.9.9/docs/resources/network
+# see https://github.com/dmacvicar/terraform-provider-libvirt/blob/v0.9.9/docs/resources/network.md
 resource "libvirt_network" "example" {
-  name      = var.prefix
-  mode      = "nat"
-  domain    = "example.test"
-  addresses = [local.example_ip_cidr]
-  dhcp {
-    enabled = true
+  name = var.prefix
+  forward = {
+    nat = {
+      ports = [
+        {
+          start = 1024
+          end   = 65535
+        }
+      ]
+    }
   }
-  dns {
-    enabled    = true
-    local_only = false
+  domain = {
+    name = "example.test"
   }
+  ips = [
+    {
+      address = cidrhost(local.example_ip_cidr, 1)
+      netmask = cidrnetmask(local.example_ip_cidr)
+      dhcp = {
+        ranges = [
+          {
+            start = cidrhost(local.example_ip_cidr, 2)
+            end   = cidrhost(local.example_ip_cidr, -2)
+          }
+        ]
+      }
+    }
+  ]
 }
 
 # a multipart cloudbase-init cloud-config.
@@ -195,8 +231,9 @@ data "cloudinit_config" "example" {
 
 # a cloudbase-init cloud-config disk.
 # NB this creates an iso image that will be used by the NoCloud cloudbase-init datasource.
-# see https://github.com/dmacvicar/terraform-provider-libvirt/blob/v0.8.3/website/docs/r/cloudinit.html.markdown
-# see https://github.com/dmacvicar/terraform-provider-libvirt/blob/v0.8.3/libvirt/cloudinit_def.go#L139-L168
+# see https://registry.terraform.io/providers/dmacvicar/libvirt/0.9.9/docs/resources/cloudinit_disk
+# see https://github.com/dmacvicar/terraform-provider-libvirt/blob/v0.9.9/docs/resources/cloudinit_disk.md
+# see https://github.com/dmacvicar/terraform-provider-libvirt/blob/v0.9.9/internal/provider/cloudinit_disk_resource.go#L291-L341
 resource "libvirt_cloudinit_disk" "example_cloudinit" {
   name = "${var.prefix}_example_cloudinit.iso"
   meta_data = jsonencode({
@@ -205,56 +242,288 @@ resource "libvirt_cloudinit_disk" "example_cloudinit" {
   user_data = data.cloudinit_config.example.rendered
 }
 
+# see https://registry.terraform.io/providers/dmacvicar/libvirt/0.9.9/docs/resources/volume
+# see https://github.com/dmacvicar/terraform-provider-libvirt/blob/v0.9.9/docs/resources/volume.md
+resource "libvirt_volume" "example_cloudinit" {
+  pool = "default"
+  name = "${var.prefix}_example_cloudinit.iso"
+  create = {
+    content = {
+      url = libvirt_cloudinit_disk.example_cloudinit.path
+    }
+  }
+}
+
 # this uses the vagrant windows image imported from https://github.com/rgl/windows-vagrant.
-# see https://github.com/dmacvicar/terraform-provider-libvirt/blob/v0.8.3/website/docs/r/volume.html.markdown
+# see https://registry.terraform.io/providers/dmacvicar/libvirt/0.9.9/docs/resources/volume
+# see https://github.com/dmacvicar/terraform-provider-libvirt/blob/v0.9.9/docs/resources/volume.md
 resource "libvirt_volume" "example_root" {
-  name             = "${var.prefix}_root.img"
-  base_volume_name = var.base_volume_name
-  format           = "qcow2"
-  size             = 66 * 1024 * 1024 * 1024 # 66GiB. this root FS is automatically resized by cloudbase-init (by its cloudbaseinit.plugins.windows.extendvolumes.ExtendVolumesPlugin plugin which is included in the rgl/windows-vagrant image).
+  pool     = "default"
+  name     = "${var.prefix}_root.img"
+  capacity = 66 * 1024 * 1024 * 1024 # 66GiB. this root FS is automatically resized by cloudbase-init (by its cloudbaseinit.plugins.windows.extendvolumes.ExtendVolumesPlugin plugin which is included in the rgl/windows-vagrant image).
+  target = {
+    format = {
+      type = "qcow2"
+    }
+  }
+  backing_store = {
+    format = {
+      type = "qcow2"
+    }
+    path = "/var/lib/libvirt/images/${var.base_volume_name}"
+  }
 }
 
 # a data disk.
-# see https://github.com/dmacvicar/terraform-provider-libvirt/blob/v0.8.3/website/docs/r/volume.html.markdown
+# see https://registry.terraform.io/providers/dmacvicar/libvirt/0.9.9/docs/resources/volume
+# see https://github.com/dmacvicar/terraform-provider-libvirt/blob/v0.9.9/docs/resources/volume.md
 resource "libvirt_volume" "example_data" {
-  name   = "${var.prefix}_data.img"
-  format = "qcow2"
-  size   = 6 * 1024 * 1024 * 1024 # 6GiB.
+  pool     = "default"
+  name     = "${var.prefix}_data.img"
+  capacity = 6 * 1024 * 1024 * 1024 # 6GiB.
+  target = {
+    format = {
+      type = "qcow2"
+    }
+  }
 }
 
-# see https://github.com/dmacvicar/terraform-provider-libvirt/blob/v0.8.3/website/docs/r/domain.html.markdown
+# see https://registry.terraform.io/providers/dmacvicar/libvirt/0.9.9/docs/resources/domain
+# see https://github.com/dmacvicar/terraform-provider-libvirt/blob/v0.9.9/docs/resources/domain.md
 resource "libvirt_domain" "example" {
   name        = var.prefix
   description = "see ${var.workspace_path}"
-  machine     = "q35"
-  firmware    = "/usr/share/OVMF/OVMF_CODE_4M.fd"
-  cpu {
+  running     = true
+  type        = "kvm"
+  vcpu        = local.cpu_sockets * local.cpu_cores * local.cpu_threads
+  memory      = local.memory_mb
+  memory_unit = "MiB"
+  features = {
+    acpi = true
+    apic = {}
+    hyper_v = {
+      mode = "passthrough"
+    }
+    vm_port = {
+      state = "off"
+    }
+  }
+  metadata = {
+    xml = <<-EOF
+      <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
+        <libosinfo:os id="${local.os_id}"/>
+      </libosinfo:libosinfo>
+      EOF
+  }
+  os = {
+    type         = "hvm"
+    type_arch    = "x86_64"
+    type_machine = "q35"
+    firmware     = "efi"
+  }
+  cpu = {
     mode = "host-passthrough"
+    topology = {
+      sockets = local.cpu_sockets
+      cores   = local.cpu_cores
+      threads = local.cpu_threads
+    }
   }
-  vcpu   = 4
-  memory = 4 * 1024
-  video {
-    type = "qxl"
+  clock = {
+    offset = "localtime"
+    timer = [
+      {
+        name        = "rtc"
+        tick_policy = "catchup"
+      },
+      {
+        name        = "pit"
+        tick_policy = "delay"
+      },
+      {
+        name    = "hpet"
+        present = "no"
+      },
+      {
+        name    = "hypervclock"
+        present = "yes"
+      },
+    ]
   }
-  xml {
-    xslt = templatefile("libvirt-domain.xsl.tpl", {
-      os_id = local.os_id
-    })
+  devices = {
+    graphics = [
+      {
+        spice = {
+          auto_port = true
+          listeners = [
+            {
+              address = {}
+            }
+          ]
+        }
+      }
+    ]
+    videos = [
+      {
+        model = {
+          type    = "qxl"
+          primary = "yes"
+          vram    = 65536
+          ram     = 65536
+          vga_mem = 16384
+          heads   = 1
+        }
+      }
+    ]
+    controllers = [
+      {
+        type  = "scsi"
+        model = "virtio-scsi"
+      },
+      {
+        type = "virtio-serial"
+      }
+    ]
+    channels = [
+      {
+        source = {
+          unix = {
+            mode = "bind"
+          }
+        }
+        target = {
+          virt_io = {
+            name = "org.qemu.guest_agent.0"
+          }
+        }
+      },
+      {
+        source = {
+          spice_vmc = true
+        }
+        target = {
+          virt_io = {
+            name = "com.redhat.spice.0"
+          }
+        }
+      }
+    ]
+    rngs = [
+      {
+        model = "virtio"
+        backend = {
+          random = "/dev/urandom"
+        }
+      }
+    ]
+    disks = [
+      {
+        driver = {
+          name = "qemu"
+          type = "qcow2"
+        }
+        source = {
+          volume = {
+            pool   = libvirt_volume.example_root.pool
+            volume = libvirt_volume.example_root.name
+          }
+        }
+        block_io = {
+          # set the discard_granularity to make windows happy.
+          # NB when using a qemu/kvm based hypervisor, ssd trim is only available when
+          #    discard_granularity is set to 8K (or higher), otherwise,
+          #    defrag.exe C: /H /L fails as: Incorrect function. (0x80070001) error.
+          #    NB when using proxmox, there is no explicit way to set discard_granularity.
+          #       it could be set using qemu_additional_args argument, but when using
+          #       non-root user token, that fails as: only root can set 'args' config, so
+          #       we do not do it.
+          #    see lsblk -o NAME,PHY-SEC,LOG-SEC,DISC-GRAN,DISC-ALN
+          #    see fsutil.exe behavior query DisableDeleteNotify
+          #    see /etc/libvirt/qemu/{vm_name}.xml (when using libvirt).
+          #    see /etc/pve/qemu-server/{vm_id}.conf (when using proxmox).
+          # see https://libvirt.org/formatdomain.html
+          # see https://github.com/virtio-win/kvm-guest-drivers-windows/issues/1574
+          discard_granularity = 8 * 1024
+        }
+        target = {
+          bus = "scsi"
+          dev = "sda"
+        }
+        wwn = format("000000000000aa%02x", 0)
+      },
+      {
+        driver = {
+          name = "qemu"
+          type = "qcow2"
+        }
+        source = {
+          volume = {
+            pool   = libvirt_volume.example_data.pool
+            volume = libvirt_volume.example_data.name
+          }
+        }
+        block_io = {
+          # set the discard_granularity to make windows happy.
+          # NB when using a qemu/kvm based hypervisor, ssd trim is only available when
+          #    discard_granularity is set to 8K (or higher), otherwise,
+          #    defrag.exe C: /H /L fails as: Incorrect function. (0x80070001) error.
+          #    NB when using proxmox, there is no explicit way to set discard_granularity.
+          #       it could be set using qemu_additional_args argument, but when using
+          #       non-root user token, that fails as: only root can set 'args' config, so
+          #       we do not do it.
+          #    see lsblk -o NAME,PHY-SEC,LOG-SEC,DISC-GRAN,DISC-ALN
+          #    see fsutil.exe behavior query DisableDeleteNotify
+          #    see /etc/libvirt/qemu/{vm_name}.xml (when using libvirt).
+          #    see /etc/pve/qemu-server/{vm_id}.conf (when using proxmox).
+          # see https://libvirt.org/formatdomain.html
+          # see https://github.com/virtio-win/kvm-guest-drivers-windows/issues/1574
+          discard_granularity = 8 * 1024
+        }
+        target = {
+          bus = "scsi"
+          dev = "sdb"
+        }
+        wwn = format("000000000000ab%02x", 0)
+      },
+      {
+        device = "cdrom"
+        source = {
+          volume = {
+            pool   = libvirt_volume.example_cloudinit.pool
+            volume = libvirt_volume.example_cloudinit.name
+          }
+        }
+        target = {
+          bus = "scsi"
+          dev = "hdd"
+        }
+        serial = "cloudinit"
+      }
+    ]
+    interfaces = [
+      {
+        type = "network"
+        model = {
+          type = "virtio"
+        }
+        source = {
+          network = {
+            network = libvirt_network.example.name
+          }
+        }
+        wait_for_ip = {
+          network = local.example_ip_cidr
+          source  = "agent"
+          timeout = 300 # 300s (5m).
+        }
+      }
+    ]
   }
-  qemu_agent = true
-  cloudinit  = libvirt_cloudinit_disk.example_cloudinit.id
-  disk {
-    volume_id = libvirt_volume.example_root.id
-    scsi      = true
-  }
-  disk {
-    volume_id = libvirt_volume.example_data.id
-    scsi      = true
-  }
-  network_interface {
-    network_id     = libvirt_network.example.id
-    wait_for_lease = true
-    hostname       = "example"
-    addresses      = [local.example_ip_address]
-  }
+}
+
+# see https://registry.terraform.io/providers/dmacvicar/libvirt/0.9.9/docs/data-sources/domain_interface_addresses
+# see https://github.com/dmacvicar/terraform-provider-libvirt/blob/v0.9.9/docs/data-sources/domain_interface_addresses.md
+data "libvirt_domain_interface_addresses" "example" {
+  domain = libvirt_domain.example.name
+  source = "agent"
 }
