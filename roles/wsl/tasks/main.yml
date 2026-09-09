@@ -84,7 +84,7 @@
       version: '{{ wsl_version }}'
 
 # see https://releases.ubuntu.com/26.04/
-# see https://github.com/microsoft/WSL/blob/2.9.9/distributions/DistributionInfo.json
+# see https://github.com/microsoft/WSL/blob/2.9.10/distributions/DistributionInfo.json
 - name: Install WSL Ubuntu-26.04
   block:
     - name: Install WSL Ubuntu-26.04

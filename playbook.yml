@@ -105,7 +105,7 @@
         winget_ps_version: '1.29.280'
         # see https://github.com/microsoft/winget-cli/releases
         # renovate: datasource=github-releases depName=microsoft/winget-cli
-        winget_cli_version: '1.29.280'
+        winget_cli_version: '1.29.290'
       block:
         - name: Install WinGet Client PowerShell Module
           community.windows.win_psmodule:
@@ -123,7 +123,7 @@
                 [string]$version,
                 [bool]$forceInstallation
               )
-              # e.g. v1.29.280
+              # e.g. v1.29.290
               $actualVersionText = winget.exe --version
               if ($actualVersionText -notmatch '^v(.+)') {
                 $forceInstallation = $true
@@ -186,7 +186,7 @@
             name: firefox
             # https://community.chocolatey.org/packages/firefox
             # renovate: datasource=nuget:chocolatey depName=firefox
-            version: '154.0.1'
+            version: '155.0.1'
             state: downgrade
             package_params: /l:en-US
         - name: Install SetDefaultBrowser
@@ -266,7 +266,7 @@
             name: gitextensions
             # https://community.chocolatey.org/packages/gitextensions
             # renovate: datasource=nuget:chocolatey depName=gitextensions
-            version: '7.2.0'
+            version: '7.2.1'
             state: downgrade
         - name: Configure Git Extensions
           ansible.windows.win_powershell:

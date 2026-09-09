@@ -7,13 +7,13 @@ wsl_ubuntu_apt_sources_url: http://mirrors.up.pt/ubuntu
 # wsl_ubuntu_apt_sources_url: http://ftp.uni-stuttgart.de/ubuntu
 
 # see https://github.com/moby/moby/releases
-# renovate: datasource=github-releases depName=moby/moby
-wsl_ubuntu_docker_version: '29.7.2'
+# renovate: datasource=deb:docker depName=docker-ce
+wsl_ubuntu_docker_version: '29.8.0'
 
 # see https://github.com/containerd/containerd/releases
-# renovate: datasource=github-releases depName=containerd/containerd
-wsl_ubuntu_containerd_version: '2.2.6'
+# renovate: datasource=deb:docker depName=containerd.io
+wsl_ubuntu_containerd_version: '2.3.5'
 
 # see https://github.com/docker/compose/releases
 # renovate: datasource=github-releases depName=docker/compose
-wsl_ubuntu_docker_compose_version: '5.5.0'
+wsl_ubuntu_docker_compose_version: '5.5.1'
