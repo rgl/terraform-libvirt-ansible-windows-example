@@ -97,6 +97,8 @@ ssh \
   "vagrant@$(terraform output --raw example_ip_address)"
 whoami /all
 ver
+pwsh -c Get-Tpm
+pwsh -c Get-TpmEndorsementKeyInfo
 choco list
 winget list
 wsl -d Ubuntu-26.04 id
