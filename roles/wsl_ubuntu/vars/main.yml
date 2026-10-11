@@ -8,12 +8,12 @@ wsl_ubuntu_apt_sources_url: http://mirrors.up.pt/ubuntu
 
 # see https://github.com/moby/moby/releases
 # renovate: datasource=deb:docker depName=docker-ce
-wsl_ubuntu_docker_version: '29.8.2'
+wsl_ubuntu_docker_version: '29.9.0'
 
 # see https://github.com/containerd/containerd/releases
 # renovate: datasource=deb:docker depName=containerd.io
-wsl_ubuntu_containerd_version: '2.3.6'
+wsl_ubuntu_containerd_version: '2.4.1'
 
 # see https://github.com/docker/compose/releases
 # renovate: datasource=github-releases depName=docker/compose
-wsl_ubuntu_docker_compose_version: '5.5.1'
+wsl_ubuntu_docker_compose_version: '5.6.0'
