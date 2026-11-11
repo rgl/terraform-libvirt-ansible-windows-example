@@ -3,11 +3,11 @@
 
 # see https://github.com/hashicorp/terraform/releases
 # renovate: datasource=github-releases depName=hashicorp/terraform
-ARG TERRAFORM_VERSION='1.17.0'
+ARG TERRAFORM_VERSION='1.17.1'
 
 # see https://github.com/devcontainers/images/blob/main/src/base-debian/manifest.json
 # see https://github.com/devcontainers/images/tree/main/src/base-debian/history
-FROM mcr.microsoft.com/devcontainers/base:2.2.3-trixie
+FROM mcr.microsoft.com/devcontainers/base:2.2.5-trixie
 
 RUN <<'EOF'
 #!/usr/bin/bash
